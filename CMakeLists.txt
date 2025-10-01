@@ -17,13 +17,13 @@ include(cmake/variables.cmake)
 
 add_library(
     scopeX_lib OBJECT
-    source/lib.cpp
+    source/libs/engine/engine.cpp
 )
 
 target_include_directories(
     scopeX_lib ${warning_guard}
     PUBLIC
-    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>"
+    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/libs/engine>"
 )
 
 target_compile_features(scopeX_lib PUBLIC cxx_std_20)
