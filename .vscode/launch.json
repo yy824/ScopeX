@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug scopeX (fixed path)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/scopeX",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "setupCommands": [{ "text": "-enable-pretty-printing" }]
+    }
+  ]
+}
