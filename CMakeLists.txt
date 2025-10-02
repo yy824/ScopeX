@@ -16,20 +16,23 @@ include(cmake/variables.cmake)
 # ---- Declare library ----
 
 add_library(
-    scopeX_lib OBJECT
+    scopeX_engine STATIC
     source/libs/engine/engine.cpp
 )
 
+add_library(scopeX::engine ALIAS scopeX_engine)
+
 target_include_directories(
-    scopeX_lib ${warning_guard}
+    scopeX_engine ${warning_guard}
     PUBLIC
-    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/libs/engine>"
+      "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
+      "\$<INSTALL_INTERFACE:include>"
 )
 
-target_compile_features(scopeX_lib PUBLIC cxx_std_20)
+target_compile_features(scopeX_engine PUBLIC cxx_std_20)
 
 find_package(fmt REQUIRED)
-target_link_libraries(scopeX_lib PRIVATE fmt::fmt)
+target_link_libraries(scopeX_engine PRIVATE fmt::fmt)
 
 # ---- Declare executable ----
 
@@ -40,12 +43,30 @@ set_property(TARGET scopeX_exe PROPERTY OUTPUT_NAME scopeX)
 
 target_compile_features(scopeX_exe PRIVATE cxx_std_20)
 
-target_link_libraries(scopeX_exe PRIVATE scopeX_lib)
+target_link_libraries(scopeX_exe PRIVATE scopeX_engine)
 
 # ---- Install rules ----
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)
   include(cmake/install-rules.cmake)
+endif()
+
+# ---- Testing(GoogleTest + CTest) ----
+set(BUILD_TESTING OFF CACHE BOOL "Build tests")
+
+include(CTest)
+if(BUILD_TESTING)
+  include(FetchContent)
+  FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.zip
+  )
+  FetchContent_GetProperties(googletest)
+  if(NOT googletest_POPULATED)
+    FetchContent_Populate(googletest)
+    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} EXCLUDE_FROM_ALL)
+  endif()
+  add_subdirectory(tests)
 endif()
 
 # ---- Developer mode ----
