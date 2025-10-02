@@ -10,7 +10,9 @@
       "cwd": "${workspaceFolder}",
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
-      "setupCommands": [{ "text": "-enable-pretty-printing" }]
+      "setupCommands": [{ "text": "-enable-pretty-printing" },
+                        { "text": "set print pretty on"},
+                        { "text": "set print object on"}],
     }
   ]
 }

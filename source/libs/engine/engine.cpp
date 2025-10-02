@@ -341,10 +341,10 @@ AddResult EngineSingleThreaded::addOrder(const OrderCmd& cmd)
     return AddResult{ status, order_id, trades, filled_qty, remaining_qty};
 }
 
-// factory method
+/// create a unique pointer of engine
+/// for future extension, can create different engine implementations based on config
 std::unique_ptr<IEngine> make_engine(const EngineConfig& config)
 {
     return std::make_unique<EngineSingleThreaded>(config);
-
 }
 }

@@ -66,7 +66,7 @@ auto main() -> int
   print_snapshot(engine->snapshot(3));
 
   // cross limit
-  auto r1 = engine->addOrder({.side=Side::BUY, .orderType=OrderType::LIMIT, .timeInForce=TimeInForce::GTC, .price=10200, .qty=12});
+  auto r1 = engine->addOrder({.side=Side::BUY, .orderType=OrderType::LIMIT, .timeInForce=TimeInForce::GTC, .price=10200, .qty=13});
   print_trades(r1.trades);
   print_snapshot(engine->snapshot(3));
 

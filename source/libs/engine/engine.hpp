@@ -73,12 +73,11 @@ struct AddResult {
 };
 
 // --------- Engine Interface ---------
-struct EngineConfig {
-    // MARKET + GTC : true -> IOC by default, false -> REJECT
-    bool market_gtc_as_ioc{true};
 
-    // optional: Max levels in market depth snapshot
-    size_t market_max_levels{0};
+/// @brief Engine configuration options
+struct EngineConfig {
+    bool market_gtc_as_ioc{true}; ///< MARKET + GTC : true -> IOC by default, false -> REJECT
+    size_t market_max_levels{0}; ///< optional: Max levels in market depth snapshot
 };
 
 class IEngine {
