@@ -35,7 +35,7 @@ private:
 
     BidBook bids_;
     AskBook asks_;
-    std::unordered_map<Id, std::pair<Side, Price>> index_; // order id -> (side, price)
+    std::unordered_map<Id, Locate> index_; // order id -> (side, price)
 
     static Qty level_qty(const std::deque<Order>& q)
     {
@@ -46,16 +46,18 @@ private:
         return s;
     }
 
-    template<class Level>
-    static void match_level(Order& in, Level& level, Price level_px, std::vector<Trade>& trades, uint64_t timestamp)
+    void match_level(Order& in, std::deque<Order>& level, Price level_px, std::vector<Trade>& trades, uint64_t timestamp)
     {
         while (in.qty > 0 && !level.empty()) {
+            // pick up the top order in the same price level
             Order& top = level.front();
             Qty trade_qty = std::min(in.qty, top.qty);
             trades.push_back(Trade{ in.id, top.id, level_px, trade_qty, timestamp });
+            // update in order quantity. Later can be decided whether it has to be added in order list
             in.qty -= trade_qty;
             top.qty -= trade_qty;
             if (top.qty == 0) {
+                index_.erase(top.id);
                 level.pop_front();
             }
         }
@@ -124,8 +126,15 @@ std::vector<Trade> OrderBook::add_limit(Order order, TimeInForce tif, std::uint6
         // remaining qty
         if (order.qty > 0) {
             if (tif == TimeInForce::GTC) {
-                bids_[order.price].push_back(order);
-                index_[order.id] = { Side::BUY, order.price };
+                // add to bids and get index price level iterator
+                auto [lv_it, _] = bids_.try_emplace(order.price, std::deque<Order>{});
+                auto& q = lv_it->second;
+                // adding into deque end at the same price level
+                q.emplace_back(std::move(order));
+                // index it
+                auto q_it = std::prev(q.end());
+                // added only for Bid. it is able to find the location for price(lv_it) then order id(q_it) with O(1)
+                index_[order.id] = Locate{ .side = Side::BUY, .bid_it = lv_it, .ask_it = AskBook::iterator{}, .q_it = q_it };
             }
             // IOC/FOK unfilled portion is discarded
         }
@@ -142,8 +151,15 @@ std::vector<Trade> OrderBook::add_limit(Order order, TimeInForce tif, std::uint6
         // remaining qty
         if (order.qty > 0) {
             if (tif == TimeInForce::GTC) {
-                asks_[order.price].push_back(order);
-                index_[order.id] = { Side::SELL, order.price };
+                // add to asks and get index price level iterator
+                auto [lv_it, _] = asks_.try_emplace(order.price, std::deque<Order>{});
+                auto& q = lv_it->second;
+                // adding into deque end at the same price level
+                q.emplace_back(std::move(order));
+                // index it
+                auto q_it = std::prev(q.end());
+                // added only for Ask. it is able to find the location for price(lv_it) then order id(q_it) with O(1)
+                index_[order.id] = Locate{ .side = Side::SELL, .bid_it = BidBook::iterator{}, .ask_it = lv_it, .q_it = q_it };
             }
             // IOC/FOK unfilled portion is discarded
         }
@@ -192,38 +208,30 @@ bool OrderBook::cancel(Id id)
     if (it == index_.end()) {
         return false; // not found
     }
-    Side side = it->second.first;
-    Price px = it->second.second;
-    index_.erase(it);
-
-    if (side == Side::BUY) {
-        auto book_it = bids_.find(px);
-        if (book_it != bids_.end()) {
-            auto& q = book_it->second;
-            auto order_it = std::find_if(q.begin(), q.end(), [id](const Order& o) { return o.id == id; });
-            if (order_it != q.end()) {
-                q.erase(order_it);
-                if (q.empty()) {
-                    bids_.erase(book_it);
-                }
-                return true;
-            }
-        }
-    } else { // SELL
-        auto book_it = asks_.find(px);
-        if (book_it != asks_.end()) {
-            auto& q = book_it->second; // q --> deque<Order>
-            auto order_it = std::find_if(q.begin(), q.end(), [id](const Order& o) { return o.id == id; });
-            if (order_it != q.end()) {
-                q.erase(order_it);
-                if (q.empty()) {
-                    asks_.erase(book_it);
-                }
-                return true;
-            }
-        }
+    
+    // with O(1) cancel function it is much faster than O(logN) search + O(1) erase
+    auto& loc = it->second; // get locate info
+    if (loc.side == Side::BUY) {
+        // find price level
+        auto& q = loc.bid_it->second;
+        // erase order in the price level queue
+        q.erase(loc.q_it); // erase the queue iterator from deque
+        if (q.empty()) {
+            bids_.erase(loc.bid_it);
+        } // remove empty price level
     }
-    return false; // should not reach here
+    else
+    {
+        // find price level
+        auto& q = loc.ask_it->second;
+        // erase order in the price level queue
+        q.erase(loc.q_it); // erase the queue iterator from deque
+        if (q.empty()) {
+            asks_.erase(loc.ask_it);
+        } // remove empty price level
+    }
+    index_.erase(it); // remove from index
+    return true;
 }
 
 Snapshot OrderBook::snapshot(int depth) const

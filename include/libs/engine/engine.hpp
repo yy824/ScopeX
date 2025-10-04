@@ -12,6 +12,9 @@
 #include <optional>
 #include <vector>
 #include <memory>
+#include <map>
+#include <deque>
+
 namespace engine {
 
 
@@ -71,6 +74,14 @@ struct AddResult {
     Qty filledQty{0}; // quantity filled immediately
     Qty remainingQty{0}; // quantity remaining in the book
 };
+
+struct Locate {
+    Side side;
+    std::map<Price, std::deque<Order>, std::greater<>>::iterator bid_it;    // point to price node (iterator) in order book map
+    std::map<Price, std::deque<Order>, std::less<>>::iterator ask_it;
+    std::deque<Order>::iterator q_it;     // point to order in the price level queue
+};
+
 
 // --------- Engine Interface ---------
 
