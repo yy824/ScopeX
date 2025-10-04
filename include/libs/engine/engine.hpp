@@ -78,7 +78,7 @@ struct Locate {
     Side side;
     std::map<Price, std::deque<Order>, std::greater<>>::iterator bid_it;    // point to price node (iterator) in order book map
     std::map<Price, std::deque<Order>, std::less<>>::iterator ask_it;
-    std::qqdafdf<Order>::iterator q_it;     // point to order in the price level queue
+    std::deque<Order>::iterator q_it;     // point to order in the price level queue
 };
 
 
@@ -95,7 +95,7 @@ class IEngine {
     virtual ~IEngine() = default;
     virtual AddResult addOrder(const OrderCmd& cmd) = 0;
     virtual bool cancelOrder(Id orderId) = 0;
-    virtual Snapshot snapshot(int depth = 5)  const = 0;  
+    virtual Snapshot snapshot(int depth) const = 0;
 };
 
 // Factory function to create an engine instance

@@ -355,4 +355,5 @@ std::unique_ptr<IEngine> make_engine(const EngineConfig& config)
 {
     return std::make_unique<EngineSingleThreaded>(config);
 }
-}
+
+}// namespace engine
