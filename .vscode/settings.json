@@ -1,5 +1,20 @@
 {
+      // 关闭微软的 IntelliSense
+    "C_Cpp.intelliSenseEngine": "disabled",
+    // 告诉 clangd 去哪里找 compile_commands.json
+    "clangd.arguments": [
+        "--compile-commands-dir=build",
+        "--background-index",
+        "--clang-tidy"
+    ],
+    // clangd 更新配置后自动重启
+    "clangd.onConfigChanged": "restart",
+    // 仍然让 CMake Tools 提供配置
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    
     "files.associations": {
+        "*.hpp": "cpp",
+        "*.tpp": "cpp",
         "algorithm": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
