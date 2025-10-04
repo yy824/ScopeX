@@ -31,7 +31,7 @@ enum class OrderStatus : std::uint8_t { OK, PARTIAL, FILLED, REJECT, FOK_FAIL, E
 
 /* engine::OrderCmd is a structure representing a command to create new orders, with fields for optional order ID, side (defaulting to BUY), order type (defaulting to LIMIT), time-in-force (defaulting to GTC), price (for LIMIT orders), quantity, and an optional user-provided timestamp. This structure is used to encapsulate all necessary details for defining and submitting an order. */
 struct order_cmd_t {
-    std::optional<id_t> order_id; /* if not set, means new order */
+    std::optional<id_t> order_id = std::nullopt; /* if not set, means new order */
     Side side{Side::BUY};
     OrderType order_type{OrderType::LIMIT};
     TimeInForce time_in_force{TimeInForce::GTC};
@@ -87,7 +87,7 @@ struct locate_t {
 /// @brief Engine configuration options
 struct engine_config_t {
     bool market_gtc_as_ioc{true}; ///< MARKET + GTC : true -> IOC by default, false -> REJECT
-    size_t market_max_levels{0}; ///< optional: Max levels in market depth snapshot
+    uint64_t market_max_levels{0}; ///< optional: Max levels in market depth snapshot
 };
 
 class IEngine {

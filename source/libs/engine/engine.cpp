@@ -19,7 +19,7 @@ class OrderBook {
 public:
     // only use side, price, qty, id from order
     std::vector<trade_t> add_limit(order_t order, TimeInForce tif, std::uint64_t timestamp);
-    std::vector<trade_t> add_market(order_t order, TimeInForce tif, std::uint64_t timestamp, int max_levels, bool& empty_book);
+    std::vector<trade_t> add_market(order_t order, std::uint64_t timestamp, std::uint16_t max_levels, bool& empty_book);
     bool cancel(id_t order_id);
 
     snapshot_t snapshot(int depth) const;
@@ -27,7 +27,7 @@ public:
     // for FOK (Fill-Or-Kill) check
     qty_t available_to_buy_up_to(price_t price) const;
     qty_t available_to_sell_down_to(price_t price) const;
-    qty_t available_market(Side side, int max_levels) const;
+    qty_t available_market(Side side, std::uint16_t max_levels) const;
 
 private:
     using BidBook = std::map<price_t, std::deque<order_t>, std::greater<>>; // Bid price type
@@ -52,7 +52,7 @@ private:
             // pick up the top order in the same price level
             order_t& top = level.front();
             qty_t trade_qty = std::min(in_order.qty, top.qty);
-            trades.push_back( trade_t{ in_order.id, top.id, level_px, trade_qty, timestamp } );
+            trades.push_back( trade_t{ .taker=in_order.id, .maker=top.id, .price=level_px, .qty=trade_qty, .timestamp=timestamp } );
             // update in order quantity. Later can be decided whether it has to be added in order list
             in_order.qty -= trade_qty;
             top.qty -= trade_qty;
@@ -87,10 +87,10 @@ qty_t OrderBook::available_to_sell_down_to(price_t price) const
     return total;
 }
 
-qty_t OrderBook::available_market(Side side, int max_levels) const
+qty_t OrderBook::available_market(Side side, std::uint16_t max_levels) const
 {
     qty_t total = 0;
-    int levels = 0;
+    std::uint16_t levels = 0;
     if (side == Side::BUY) {
         for (const auto& [ask_px, order_queue] : asks_) {
             total += level_qty(order_queue);
@@ -167,14 +167,15 @@ std::vector<trade_t> OrderBook::add_limit(order_t order, TimeInForce tif, std::u
     return trades;
 }
 
-// adding market order, price is ignored here, set to 0
-std::vector<trade_t> OrderBook::add_market(order_t order, TimeInForce tif, std::uint64_t timestamp, int max_levels, bool& empty_book)
+// matching only, remaining qty is discarded
+std::vector<trade_t> OrderBook::add_market(order_t order, std::uint64_t timestamp, std::uint16_t max_levels, bool& empty_book)
 {
-    std::vector<trade_t> trades;
-    int level = 0;
     if (order.qty <= 0) {
-        return trades; // invalid qty
+        return {}; // invalid qty
     }
+    std::vector<trade_t> trades;
+    std::uint16_t level = 0;
+
     if(order.side == Side::BUY)
     {
         while(order.qty > 0 && !asks_.empty())
@@ -281,12 +282,18 @@ private:
 
 add_result_t EngineSingleThreaded::add_order(const order_cmd_t& cmd)
 {
+    // 0. basic validation
     if (cmd.qty <= 0) 
     {
-        return add_result_t{ OrderStatus::BAD_INPUT, 0, {}, 0, 0 };
+        return add_result_t{ .status=OrderStatus::BAD_INPUT, .order_id=0, .trades={}, .filled_qty=0, .remaining_qty=cmd.qty };
     }
 
-    // determine order id by user provided or internal, only if orderId is not set, use internal next_ and increment it.
+    if (cmd.order_type == OrderType::LIMIT && cmd.price <= 0) 
+    {
+        return add_result_t{ .status=OrderStatus::BAD_INPUT, .order_id=0, .trades={}, .filled_qty=0, .remaining_qty=cmd.qty };
+    }
+
+    // 1. assign a new order id if not provided.
     id_t order_id = cmd.order_id.value_or(next_++);
 
     uint64_t timestamp = ++seq_; // internal sequence number for ordering -> in the future can be replaced by global time source
@@ -306,48 +313,72 @@ add_result_t EngineSingleThreaded::add_order(const order_cmd_t& cmd)
                 (ob_.available_to_sell_down_to(cmd.price) >= cmd.qty);
             if(!is_ok)
             {
-                return add_result_t{ OrderStatus::FOK_FAIL, order_id, {}, 0, cmd.qty};
+                return add_result_t{ .status=OrderStatus::FOK_FAIL, .order_id=order_id, .trades={}, .filled_qty=0, .remaining_qty=cmd.qty};
             }
         }
 
-        trades = ob_.add_limit(order_t{cmd.order_id.value_or(order_id), cmd.side, cmd.price, cmd.qty, 0}, cmd.time_in_force, timestamp);
-        for(auto& trade:trades) {filled_qty += trade.qty;}
+        // implement limit orders
+        trades = ob_.add_limit(order_t{.id=cmd.order_id.value_or(order_id), .side=cmd.side, .price=cmd.price, .qty=cmd.qty, .seq_num=0}, cmd.time_in_force, timestamp);
+        for(const auto& trade:trades) {filled_qty += trade.qty;}
         remaining_qty = cmd.qty - filled_qty;
 
-        status = (filled_qty == 0 ? OrderStatus::OK :
-                  (remaining_qty == 0 ? OrderStatus::FILLED : OrderStatus::PARTIAL));
-    } else { // MARKET
+        // State machine
+        if(cmd.time_in_force == TimeInForce::FOK)
+        {
+            status = (remaining_qty == 0 ? OrderStatus::FILLED : OrderStatus::FOK_FAIL);
+        }
+        else if(cmd.time_in_force == TimeInForce::IOC)
+        {
+            status = (filled_qty == 0 ? OrderStatus::OK :
+                      (remaining_qty == 0 ? OrderStatus::FILLED : OrderStatus::PARTIAL));
+        }
+        else // GTC
+        {
+            status = (filled_qty == 0 ? OrderStatus::OK :
+                      (remaining_qty == 0 ? OrderStatus::FILLED : OrderStatus::OK));
+        }
+    } 
+    else // MARKET
+    { 
+        // MARKET order validation
         if(cmd.time_in_force == TimeInForce::FOK)
         {
             const auto available = ob_.available_market(cmd.side, config_.market_max_levels);
             if(available < cmd.qty)
             {
-                return add_result_t{ OrderStatus::FOK_FAIL, order_id, {}, 0, cmd.qty};
+                return add_result_t{ .status=OrderStatus::FOK_FAIL, .order_id=order_id, .trades={}, .filled_qty=0, .remaining_qty=cmd.qty};
             }
         } 
+        
+        // MARKET + GTC
         if(cmd.time_in_force == TimeInForce::GTC && !config_.market_gtc_as_ioc)
         {
-            return add_result_t{ OrderStatus::REJECT, order_id, {}, 0, cmd.qty};
+            return add_result_t{ .status=OrderStatus::REJECT, .order_id=order_id, .trades={}, .filled_qty=0, .remaining_qty=cmd.qty};
         }
 
         bool empty_book = false;
-        trades = ob_.add_market(order_t{cmd.order_id.value_or(order_id), cmd.side, 0, cmd.qty, 0}, 
-                                cmd.time_in_force, timestamp, config_.market_max_levels, empty_book);
+        trades = ob_.add_market(order_t{.id=cmd.order_id.value_or(order_id), .side=cmd.side, .price=0, .qty=cmd.qty, .seq_num=0}, 
+                                timestamp, config_.market_max_levels, empty_book);
 
-        for(auto& trade:trades) filled_qty += trade.qty;
+        for(const auto& trade:trades) {filled_qty += trade.qty;}
         remaining_qty = cmd.qty - filled_qty;
 
+        // State machine
         if(filled_qty == 0 && empty_book)
         {
-            status = OrderStatus::EMPTY_BOOK;
+            status = OrderStatus::EMPTY_BOOK; // no liquidity at all
         }
-        else
+        else if(cmd.time_in_force == TimeInForce::FOK)
         {
-            status = (filled_qty == 0 ? OrderStatus::OK :
-                      (remaining_qty == 0 ? OrderStatus::FILLED : OrderStatus::PARTIAL));
+            status = (remaining_qty == 0 ? OrderStatus::FILLED : OrderStatus::FOK_FAIL);
+        }
+        else // IOC or GTC(as IOC)
+        {
+            status = (remaining_qty == 0 ? OrderStatus::FILLED :
+                      (filled_qty > 0 ? OrderStatus::PARTIAL : OrderStatus::OK));
         }
     }
-    return add_result_t{ status, order_id, trades, filled_qty, remaining_qty};
+    return add_result_t{ .status=status, .order_id=order_id, .trades=std::move(trades), .filled_qty=filled_qty, .remaining_qty=remaining_qty};
 }
 
 /// create a unique pointer of engine
