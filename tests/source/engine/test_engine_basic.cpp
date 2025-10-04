@@ -20,3 +20,12 @@ TEST(EngineBasic, CrossLimitAndSnapshot) {
   EXPECT_EQ(s.bids[0].qty,   10);
   EXPECT_TRUE(s.asks.empty());
 }
+
+TEST(CancelO1, CancelHead) {
+  auto eng = make_engine({true, 0});
+  eng->addOrder({.side=Side::BUY, .orderType=OrderType::LIMIT, .timeInForce=TimeInForce::GTC, .price=100, .qty=10});
+  eng->addOrder({.side=Side::BUY, .orderType=OrderType::LIMIT, .timeInForce=TimeInForce::GTC, .price=100, .qty=20});
+    ASSERT_TRUE(eng->cancelOrder(1000));
+    auto snap = eng->snapshot(5);
+    EXPECT_EQ(snap.bids[0].qty, 20);
+}
