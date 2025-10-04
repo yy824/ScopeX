@@ -14,23 +14,23 @@
 
 using namespace engine;
 
-static void print_trades(const std::vector<Trade>& trades)
+static void print_trades(const std::vector<trade_t>& trades)
 {
   using std::cout;
   using std::fixed;
   using std::setprecision;
 
-  for(auto& x:trades)
+  for(const auto& trade:trades)
   {
-    cout << "TRADE taker=" << x.taker 
-    << " maker=" << x.maker 
-    << " price=" << fixed << setprecision(2) << x.price/100.0
-    << " quantity=" << x.qty
+    cout << "TRADE taker=" << trade.taker 
+    << " maker=" << trade.maker 
+    << " price=" << fixed << setprecision(2) << trade.price/100.0
+    << " quantity=" << trade.qty
     << '\n';
   }
 }
 
-static void print_snapshot(const Snapshot& snap)
+static void print_snapshot(const snapshot_t& snap)
 {
   using std::cout;
   using std::left;
@@ -38,7 +38,7 @@ static void print_snapshot(const Snapshot& snap)
   using std::fixed;
   using std::setprecision;
 
-  cout << "===== Order Book Snapshot (top) =====\n";
+  cout << "===== Order Book snapshot_t (top) =====\n";
   cout << left << setw(20) << "BIDS" << "| " << left << setw(20) << "ASKS" << "\n";
 
   auto it_ask = snap.asks.rbegin();
@@ -59,19 +59,19 @@ auto main() -> int
   auto engine = make_engine({/*market_gtc_as_ioc*/true, /*markets_max_levels*/0});
 
   // Seed
-  engine->addOrder({.side=Side::SELL, .orderType=OrderType::LIMIT, .timeInForce=TimeInForce::GTC, .price=10100, .qty=7});
-  engine->addOrder({.side=Side::SELL, .orderType=OrderType::LIMIT, .timeInForce=TimeInForce::GTC, .price=10200, .qty=5});
-  engine->addOrder({.side=Side::BUY, .orderType=OrderType::LIMIT, .timeInForce=TimeInForce::GTC, .price=9500, .qty=10});
+  engine->add_order({.side=Side::SELL, .order_type=OrderType::LIMIT, .time_in_force=TimeInForce::GTC, .price=10100, .qty=7});
+  engine->add_order({.side=Side::SELL, .order_type=OrderType::LIMIT, .time_in_force=TimeInForce::GTC, .price=10200, .qty=5});
+  engine->add_order({.side=Side::BUY, .order_type=OrderType::LIMIT, .time_in_force=TimeInForce::GTC, .price=9500, .qty=10});
 
   print_snapshot(engine->snapshot(3));
 
   // cross limit
-  auto r1 = engine->addOrder({.side=Side::BUY, .orderType=OrderType::LIMIT, .timeInForce=TimeInForce::GTC, .price=10200, .qty=13});
+  auto r1 = engine->add_order({.side=Side::BUY, .order_type=OrderType::LIMIT, .time_in_force=TimeInForce::GTC, .price=10200, .qty=13});
   print_trades(r1.trades);
   print_snapshot(engine->snapshot(3));
 
   // market ioc
-  auto r2 = engine->addOrder({.side=Side::SELL, .orderType=OrderType::MARKET, .timeInForce=TimeInForce::IOC, .qty=8});
+  auto r2 = engine->add_order({.side=Side::SELL, .order_type=OrderType::MARKET, .time_in_force=TimeInForce::IOC, .qty=8});
 
   print_trades(r2.trades);
   print_snapshot(engine->snapshot(3));

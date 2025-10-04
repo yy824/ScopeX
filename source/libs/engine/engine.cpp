@@ -14,47 +14,47 @@
 
 namespace engine {
 
-// ------------Order Book Implementation---------
+// ------------order_t Book Implementation---------
 class OrderBook {
 public:
     // only use side, price, qty, id from order
-    std::vector<Trade> add_limit(Order order, TimeInForce tif, std::uint64_t timestamp);
-    std::vector<Trade> add_market(Order order, TimeInForce tif, std::uint64_t timestamp, int max_levels, bool& empty_book);
-    bool cancel(Id id);
+    std::vector<trade_t> add_limit(order_t order, TimeInForce tif, std::uint64_t timestamp);
+    std::vector<trade_t> add_market(order_t order, TimeInForce tif, std::uint64_t timestamp, int max_levels, bool& empty_book);
+    bool cancel(id_t order_id);
 
-    Snapshot snapshot(int depth) const;
+    snapshot_t snapshot(int depth) const;
 
     // for FOK (Fill-Or-Kill) check
-    Qty available_to_buy_up_to(Price px) const;
-    Qty available_to_sell_down_to(Price px) const;
-    Qty available_market(Side side, int max_levels) const;
+    qty_t available_to_buy_up_to(price_t price) const;
+    qty_t available_to_sell_down_to(price_t price) const;
+    qty_t available_market(Side side, int max_levels) const;
 
 private:
-    using BidBook = std::map<Price, std::deque<Order>, std::greater<>>; // Bid price type
-    using AskBook = std::map<Price, std::deque<Order>, std::less<> >;   // Ask price type
+    using BidBook = std::map<price_t, std::deque<order_t>, std::greater<>>; // Bid price type
+    using AskBook = std::map<price_t, std::deque<order_t>, std::less<> >;   // Ask price type
 
     BidBook bids_;
     AskBook asks_;
-    std::unordered_map<Id, Locate> index_; // order id -> (side, price)
+    std::unordered_map<id_t, locate_t> index_; // order id -> (side, price)
 
-    static Qty level_qty(const std::deque<Order>& q)
+    static qty_t level_qty(const std::deque<order_t>& price_level)
     {
-        Qty s = 0;
-        for (const auto& o : q) {
-            s += o.qty;
+        qty_t quantity = 0;
+        for (const auto& order : price_level) {
+            quantity += order.qty;
         }
-        return s;
+        return quantity;
     }
 
-    void match_level(Order& in, std::deque<Order>& level, Price level_px, std::vector<Trade>& trades, uint64_t timestamp)
+    void match_level(order_t& in_order, std::deque<order_t>& level, price_t level_px, std::vector<trade_t>& trades, uint64_t timestamp)
     {
-        while (in.qty > 0 && !level.empty()) {
+        while (in_order.qty > 0 && !level.empty()) {
             // pick up the top order in the same price level
-            Order& top = level.front();
-            Qty trade_qty = std::min(in.qty, top.qty);
-            trades.push_back(Trade{ in.id, top.id, level_px, trade_qty, timestamp });
+            order_t& top = level.front();
+            qty_t trade_qty = std::min(in_order.qty, top.qty);
+            trades.push_back( trade_t{ in_order.id, top.id, level_px, trade_qty, timestamp } );
             // update in order quantity. Later can be decided whether it has to be added in order list
-            in.qty -= trade_qty;
+            in_order.qty -= trade_qty;
             top.qty -= trade_qty;
             if (top.qty == 0) {
                 index_.erase(top.id);
@@ -64,51 +64,51 @@ private:
     }
 };
 
-// ------------Order Book Implementation---------
+// ------------order_t Book Implementation---------
 // capacity calculation
-Qty OrderBook::available_to_buy_up_to(Price px) const
+qty_t OrderBook::available_to_buy_up_to(price_t price) const
 {
-    Qty total = 0;
-    for (const auto& [ask_px, q] : asks_) {
-        if (ask_px > px) break;
-        total += level_qty(q);
+    qty_t total = 0;
+    for (const auto& [ask_px, price_level] : asks_) {
+        if (ask_px > price) {break;}
+        total += level_qty(price_level);
     }
     return total;
 
 }
 
-Qty OrderBook::available_to_sell_down_to(Price px) const
+qty_t OrderBook::available_to_sell_down_to(price_t price) const
 {
-    Qty total = 0;
-    for (const auto& [bid_px, q] : bids_) {
-        if (bid_px < px) break;
-        total += level_qty(q);
+    qty_t total = 0;
+    for (const auto& [bid_px, price_level] : bids_) {
+        if (bid_px < price) {break;}
+        total += level_qty(price_level);
     }
     return total;
 }
 
-Qty OrderBook::available_market(Side side, int max_levels) const
+qty_t OrderBook::available_market(Side side, int max_levels) const
 {
-    Qty total = 0;
+    qty_t total = 0;
     int levels = 0;
     if (side == Side::BUY) {
-        for (const auto& [ask_px, q] : asks_) {
-            total += level_qty(q);
-            if (++levels >= max_levels) break;
+        for (const auto& [ask_px, order_queue] : asks_) {
+            total += level_qty(order_queue);
+            if (++levels >= max_levels) {break;}
         }
     } else {
-        for (const auto& [bid_px, q] : bids_) {
-            total += level_qty(q);
-            if (++levels >= max_levels) break;
+        for (const auto& [bid_px, order_queue] : bids_) {
+            total += level_qty(order_queue);
+            if (++levels >= max_levels) {break;}
         }
     }
     return total;
 }
 
 // adding limit order
-std::vector<Trade> OrderBook::add_limit(Order order, TimeInForce tif, std::uint64_t timestamp)
+std::vector<trade_t> OrderBook::add_limit(order_t order, TimeInForce tif, std::uint64_t timestamp)
 {
-    std::vector<Trade> trades;
+    std::vector<trade_t> trades;
     if (order.qty <= 0) {
         return trades; // invalid qty
     }
@@ -127,14 +127,14 @@ std::vector<Trade> OrderBook::add_limit(Order order, TimeInForce tif, std::uint6
         if (order.qty > 0) {
             if (tif == TimeInForce::GTC) {
                 // add to bids and get index price level iterator
-                auto [lv_it, _] = bids_.try_emplace(order.price, std::deque<Order>{});
-                auto& q = lv_it->second;
+                auto [lv_it, _unused_bool] = bids_.try_emplace(order.price, std::deque<order_t>{});
+                auto& order_queue = lv_it->second;
                 // adding into deque end at the same price level
-                q.emplace_back(std::move(order));
+                order_queue.emplace_back(order);
                 // index it
-                auto q_it = std::prev(q.end());
+                auto q_it = std::prev(order_queue.end());
                 // added only for Bid. it is able to find the location for price(lv_it) then order id(q_it) with O(1)
-                index_[order.id] = Locate{ .side = Side::BUY, .bid_it = lv_it, .ask_it = AskBook::iterator{}, .q_it = q_it };
+                index_[order.id] = locate_t{ .side = Side::BUY, .bid_it = lv_it, .ask_it = AskBook::iterator{}, .q_it = q_it };
             }
             // IOC/FOK unfilled portion is discarded
         }
@@ -152,14 +152,14 @@ std::vector<Trade> OrderBook::add_limit(Order order, TimeInForce tif, std::uint6
         if (order.qty > 0) {
             if (tif == TimeInForce::GTC) {
                 // add to asks and get index price level iterator
-                auto [lv_it, _] = asks_.try_emplace(order.price, std::deque<Order>{});
-                auto& q = lv_it->second;
+                auto [lv_it, _unused_bool] = asks_.try_emplace(order.price, std::deque<order_t>{});
+                auto& order_queue = lv_it->second;
                 // adding into deque end at the same price level
-                q.emplace_back(std::move(order));
+                order_queue.emplace_back(order);
                 // index it
-                auto q_it = std::prev(q.end());
+                auto q_it = std::prev(order_queue.end());
                 // added only for Ask. it is able to find the location for price(lv_it) then order id(q_it) with O(1)
-                index_[order.id] = Locate{ .side = Side::SELL, .bid_it = BidBook::iterator{}, .ask_it = lv_it, .q_it = q_it };
+                index_[order.id] = locate_t{ .side = Side::SELL, .bid_it = BidBook::iterator{}, .ask_it = lv_it, .q_it = q_it };
             }
             // IOC/FOK unfilled portion is discarded
         }
@@ -168,9 +168,9 @@ std::vector<Trade> OrderBook::add_limit(Order order, TimeInForce tif, std::uint6
 }
 
 // adding market order, price is ignored here, set to 0
-std::vector<Trade> OrderBook::add_market(Order order, TimeInForce tif, std::uint64_t timestamp, int max_levels, bool& empty_book)
+std::vector<trade_t> OrderBook::add_market(order_t order, TimeInForce tif, std::uint64_t timestamp, int max_levels, bool& empty_book)
 {
-    std::vector<Trade> trades;
+    std::vector<trade_t> trades;
     int level = 0;
     if (order.qty <= 0) {
         return trades; // invalid qty
@@ -179,10 +179,10 @@ std::vector<Trade> OrderBook::add_market(Order order, TimeInForce tif, std::uint
     {
         while(order.qty > 0 && !asks_.empty())
         {
-            auto it = asks_.begin();
-            match_level(order, it->second, it->first, trades, timestamp);
-            if(it->second.empty()) asks_.erase(it); // remove empty level
-            if(max_levels > 0 && ++level >= max_levels) break; // reached max levels
+            auto ask_it = asks_.begin();
+            match_level(order, ask_it->second, ask_it->first, trades, timestamp);
+            if(ask_it->second.empty()) {asks_.erase(ask_it);} // remove empty level
+            if(max_levels > 0 && ++level >= max_levels) {break;} // reached max levels
         }
         empty_book = asks_.empty();
         // remaining qty is discarded for market orders
@@ -191,10 +191,10 @@ std::vector<Trade> OrderBook::add_market(Order order, TimeInForce tif, std::uint
     {
         while(order.qty > 0 && !bids_.empty())
         {
-            auto it = bids_.begin();
-            match_level(order, it->second, it->first, trades, timestamp);
-            if(it->second.empty()) bids_.erase(it); // remove empty level
-            if(max_levels > 0 && ++level >= max_levels) break; // reached max levels
+            auto bid_it = bids_.begin();
+            match_level(order, bid_it->second, bid_it->first, trades, timestamp);
+            if(bid_it->second.empty()) {bids_.erase(bid_it);} // remove empty level
+            if(max_levels > 0 && ++level >= max_levels) {break;} // reached max levels
         }
         empty_book = bids_.empty();
         // remaining qty is discarded for market orders
@@ -202,41 +202,41 @@ std::vector<Trade> OrderBook::add_market(Order order, TimeInForce tif, std::uint
     return trades;
 }
 
-bool OrderBook::cancel(Id id)
+bool OrderBook::cancel(id_t order_id)
 {
-    auto it = index_.find(id);
-    if (it == index_.end()) {
+    auto price_it = index_.find(order_id);
+    if (price_it == index_.end()) {
         return false; // not found
     }
     
     // with O(1) cancel function it is much faster than O(logN) search + O(1) erase
-    auto& loc = it->second; // get locate info
+    auto& loc = price_it->second; // get locate info
     if (loc.side == Side::BUY) {
         // find price level
-        auto& q = loc.bid_it->second;
+        auto& order_queue = loc.bid_it->second;
         // erase order in the price level queue
-        q.erase(loc.q_it); // erase the queue iterator from deque
-        if (q.empty()) {
+        order_queue.erase(loc.q_it); // erase the queue iterator from deque
+        if (order_queue.empty()) {
             bids_.erase(loc.bid_it);
         } // remove empty price level
     }
     else
     {
         // find price level
-        auto& q = loc.ask_it->second;
+        auto& order_queue = loc.ask_it->second;
         // erase order in the price level queue
-        q.erase(loc.q_it); // erase the queue iterator from deque
-        if (q.empty()) {
+        order_queue.erase(loc.q_it); // erase the queue iterator from deque
+        if (order_queue.empty()) {
             asks_.erase(loc.ask_it);
         } // remove empty price level
     }
-    index_.erase(it); // remove from index
+    index_.erase(price_it); // remove from index
     return true;
 }
 
-Snapshot OrderBook::snapshot(int depth) const
+snapshot_t OrderBook::snapshot(int depth) const
 {
-    Snapshot snap;
+    snapshot_t snap;
     snap.bids.reserve(depth > 0 ? depth : 10);
     snap.asks.reserve(depth > 0 ? depth : 10);
 
@@ -247,12 +247,12 @@ Snapshot OrderBook::snapshot(int depth) const
     {
         if(bit != bids_.end())
         {
-            snap.bids.push_back(SnapshotLevel{bit->first, level_qty(bit->second)});
+            snap.bids.push_back(snapshot_level_t{bit->first, level_qty(bit->second)});
             ++bit;
         }
         if(ait != asks_.end())
         {
-            snap.asks.push_back(SnapshotLevel{ait->first, level_qty(ait->second)});
+            snap.asks.push_back(snapshot_level_t{ait->first, level_qty(ait->second)});
             ++ait;
         }
     }
@@ -266,74 +266,75 @@ Snapshot OrderBook::snapshot(int depth) const
 // stop for further derivation. For safe capsulation, make it final.
 class EngineSingleThreaded final: public IEngine {
 public:
-    explicit EngineSingleThreaded(const EngineConfig& config): config_(config) {}
-    AddResult addOrder(const OrderCmd& cmd) override;
-    bool cancelOrder(Id orderId) override { return ob_.cancel(orderId); };
-    Snapshot snapshot(int depth = 5) const override {return ob_.snapshot(depth);};
+    explicit EngineSingleThreaded(const engine_config_t& config): config_(config) {}
+    add_result_t add_order(const order_cmd_t& cmd) override;
+    bool cancel_order(id_t order_id) override { return ob_.cancel(order_id); };
+    snapshot_t snapshot(int depth) const override {return ob_.snapshot(depth);};
   
 
 private:
-    EngineConfig config_;
+    engine_config_t config_;
     OrderBook ob_;
-    Id next_{1000};
+    id_t next_{1000};
     uint64_t seq_{0}; // internal sequence number for ordering
 };
 
-AddResult EngineSingleThreaded::addOrder(const OrderCmd& cmd)
+add_result_t EngineSingleThreaded::add_order(const order_cmd_t& cmd)
 {
     if (cmd.qty <= 0) 
     {
-        return AddResult{ OrderStatus::BAD_INPUT, 0, {}, 0, 0 };
+        return add_result_t{ OrderStatus::BAD_INPUT, 0, {}, 0, 0 };
     }
 
     // determine order id by user provided or internal, only if orderId is not set, use internal next_ and increment it.
-    Id order_id = cmd.orderId.value_or(next_++);
+    id_t order_id = cmd.order_id.value_or(next_++);
 
     uint64_t timestamp = ++seq_; // internal sequence number for ordering -> in the future can be replaced by global time source
 
-    std::vector<Trade> trades;
+    std::vector<trade_t> trades;
     OrderStatus status = OrderStatus::OK;
-    Qty filled_qty = 0, remaining_qty = 0;
+    qty_t filled_qty = 0;
+    qty_t remaining_qty = 0;
 
-    if(cmd.orderType==OrderType::LIMIT)
+    if(cmd.order_type==OrderType::LIMIT)
     {
         // FOK (Fill-Or-Kill) check
-        if(cmd.timeInForce == TimeInForce::FOK)
+        if(cmd.time_in_force == TimeInForce::FOK)
         {
-            const bool ok = (cmd.side == Side::BUY) ? 
+            const bool is_ok = (cmd.side == Side::BUY) ? 
                 (ob_.available_to_buy_up_to(cmd.price) >= cmd.qty) :
                 (ob_.available_to_sell_down_to(cmd.price) >= cmd.qty);
-            if(!ok)
+            if(!is_ok)
             {
-                return AddResult{ OrderStatus::FOK_FAIL, order_id, {}, 0, cmd.qty};
+                return add_result_t{ OrderStatus::FOK_FAIL, order_id, {}, 0, cmd.qty};
             }
         }
 
-        trades = ob_.add_limit(Order{cmd.orderId.value_or(order_id), cmd.side, cmd.price, cmd.qty, 0}, cmd.timeInForce, timestamp);
-        for(auto& t:trades) filled_qty += t.qty;
+        trades = ob_.add_limit(order_t{cmd.order_id.value_or(order_id), cmd.side, cmd.price, cmd.qty, 0}, cmd.time_in_force, timestamp);
+        for(auto& trade:trades) {filled_qty += trade.qty;}
         remaining_qty = cmd.qty - filled_qty;
 
         status = (filled_qty == 0 ? OrderStatus::OK :
                   (remaining_qty == 0 ? OrderStatus::FILLED : OrderStatus::PARTIAL));
     } else { // MARKET
-        if(cmd.timeInForce == TimeInForce::FOK)
+        if(cmd.time_in_force == TimeInForce::FOK)
         {
             const auto available = ob_.available_market(cmd.side, config_.market_max_levels);
             if(available < cmd.qty)
             {
-                return AddResult{ OrderStatus::FOK_FAIL, order_id, {}, 0, cmd.qty};
+                return add_result_t{ OrderStatus::FOK_FAIL, order_id, {}, 0, cmd.qty};
             }
         } 
-        if(cmd.timeInForce == TimeInForce::GTC && !config_.market_gtc_as_ioc)
+        if(cmd.time_in_force == TimeInForce::GTC && !config_.market_gtc_as_ioc)
         {
-            return AddResult{ OrderStatus::REJECT, order_id, {}, 0, cmd.qty};
+            return add_result_t{ OrderStatus::REJECT, order_id, {}, 0, cmd.qty};
         }
 
         bool empty_book = false;
-        trades = ob_.add_market(Order{cmd.orderId.value_or(order_id), cmd.side, 0, cmd.qty, 0}, 
-                                cmd.timeInForce, timestamp, config_.market_max_levels, empty_book);
+        trades = ob_.add_market(order_t{cmd.order_id.value_or(order_id), cmd.side, 0, cmd.qty, 0}, 
+                                cmd.time_in_force, timestamp, config_.market_max_levels, empty_book);
 
-        for(auto& t:trades) filled_qty += t.qty;
+        for(auto& trade:trades) filled_qty += trade.qty;
         remaining_qty = cmd.qty - filled_qty;
 
         if(filled_qty == 0 && empty_book)
@@ -346,14 +347,14 @@ AddResult EngineSingleThreaded::addOrder(const OrderCmd& cmd)
                       (remaining_qty == 0 ? OrderStatus::FILLED : OrderStatus::PARTIAL));
         }
     }
-    return AddResult{ status, order_id, trades, filled_qty, remaining_qty};
+    return add_result_t{ status, order_id, trades, filled_qty, remaining_qty};
 }
 
 /// create a unique pointer of engine
 /// for future extension, can create different engine implementations based on config
-std::unique_ptr<IEngine> make_engine(const EngineConfig& config)
+std::unique_ptr<IEngine> make_engine(const engine_config_t& config)
 {
     return std::make_unique<EngineSingleThreaded>(config);
 }
 
-}// namespace engine
+} // namespace engine
