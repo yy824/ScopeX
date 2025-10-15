@@ -45,6 +45,13 @@ target_compile_features(scopeX_exe PRIVATE cxx_std_20)
 
 target_link_libraries(scopeX_exe PRIVATE scopeX_engine)
 
+# ---- CLI ----
+add_executable(scopeX_cli source/cli/main.cpp)
+set_target_properties(scopeX_cli PROPERTIES OUTPUT_NAME scopeX_cli)
+target_compile_features(scopeX_cli PRIVATE cxx_std_20)
+target_link_libraries(scopeX_cli PRIVATE scopeX_engine)
+
+
 # ---- Install rules ----
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)

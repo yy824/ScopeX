@@ -18,14 +18,14 @@ namespace engine {
 
 
 // --------- Value Types ---------
-using price_t = std::int64_t; // ticks price -> e.g., price=12345 means 123.45 if tick size is 0.01
-using qty_t = std::int64_t;  // quantity
-using id_t = std::uint64_t; // unique identifier
+using price_t = int64_t; // ticks price -> e.g., price=12345 means 123.45 if tick size is 0.01
+using qty_t = int64_t;  // quantity
+using id_t = uint64_t; // unique identifier
 
-enum class Side : std::uint8_t { BUY, SELL };
-enum class OrderType : std::uint8_t { LIMIT, MARKET };
-enum class TimeInForce : std::uint8_t { GTC, IOC, FOK }; // Good-Til-Canceled, Immediate-Or-Cancel, Fill-Or-Kill
-enum class OrderStatus : std::uint8_t { OK, PARTIAL, FILLED, REJECT, FOK_FAIL, EMPTY_BOOK, BAD_INPUT };
+enum class Side : uint8_t { BUY, SELL };
+enum class OrderType : uint8_t { LIMIT, MARKET };
+enum class TimeInForce : uint8_t { GTC, IOC, FOK }; // Good-Til-Canceled, Immediate-Or-Cancel, Fill-Or-Kill
+enum class OrderStatus : uint8_t { OK, PARTIAL, FILLED, REJECT, FOK_FAIL, EMPTY_BOOK, BAD_INPUT };
 
 // --------- Data Structures ---------
 
@@ -37,7 +37,7 @@ struct order_cmd_t {
     TimeInForce time_in_force{TimeInForce::GTC};
     price_t price{0}; // for LIMIT orders
     qty_t qty{0};
-    std::uint64_t timestamp{0}; // optional user timestamp
+    uint64_t timestamp{0}; // optional user timestamp
 };
 
 struct order_t {
@@ -45,7 +45,7 @@ struct order_t {
     Side side{};
     price_t price{};
     qty_t qty{};
-    std::uint64_t seq_num{}; // internal sequence number for ordering
+    uint64_t seq_num{}; // internal sequence number for ordering
 };
 
 struct trade_t {
@@ -53,7 +53,7 @@ struct trade_t {
     id_t maker{}; 
     price_t price{};
     qty_t qty{};
-    std::uint64_t timestamp{}; // trade execution time
+    uint64_t timestamp{}; // trade execution time
 };
 
 struct snapshot_level_t {

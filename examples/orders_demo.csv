@@ -1,0 +1,35 @@
+timestamp,cmd,side,order_type,time_in_force,price,qty,order_id
+# ------------------------------------------------------------
+# GTC limit orders on both sides
+100001,ADD,SELL,LIMIT,GTC,10050,7,1
+100002,ADD,SELL,LIMIT,GTC,10100,5,2
+100003,ADD,BUY ,LIMIT,GTC,9950,10,3
+# Current book:
+#   BIDS: 9950x10
+#   ASKS: 10050x7,10100x5
+
+# IOC partial fill (price crosses first ask, then discard remainder)
+100010,ADD,BUY,LIMIT,IOC,10100,12,4
+# expect: trades 7@10050 + 5@10100 (total 12), both ask1/ask2 removed
+
+# FOK should fail (no asks at 10000 or lower)
+100020,ADD,BUY,LIMIT,FOK,10000,5,5
+# expect: 0 trades, FOK_FAIL
+
+# GTC add new asks again for next scenes
+100030,ADD,SELL,LIMIT,GTC,10050,8,6
+100031,ADD,SELL,LIMIT,GTC,10100,6,7
+
+# MARKET BUY consuming best asks (2 levels)
+100040,ADD,BUY,MARKET,IOC,0,10,8
+# expect: trades total 10 (8@10050 + 2@10100)
+
+# CANCEL one remaining order
+100050,CANCEL,,,,,,7
+# expect: ask4 removed
+
+# MARKET SELL hitting remaining bids
+100060,ADD,SELL,MARKET,IOC,0,10,10
+# expect: trades vs bid1 (10@9950)
+
+# end of replay
