@@ -11,6 +11,10 @@ See the [BUILDING](BUILDING.md) document.
   ```sudo apt update```
   
   ```sudo apt install -y build-essential ninja-build cmake gdb```
+  
+  optional:
+  
+  ```sudo apt install doxygen doxygen-doc doxygen-gui graphviz texlive-full```
 
 - developement
   
