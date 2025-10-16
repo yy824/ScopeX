@@ -1,0 +1,66 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug scopeX (fixed path)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/scopeX",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "externalConsole": false,
+      "stopAtEntry": false,
+      "setupCommands": [
+        { "text": "-enable-pretty-printing" },
+        { "text": "set print pretty on" },
+        { "text": "set print object on" }
+      ]
+    },
+
+    {
+      "name": "Debug scopex_cli (fixed path)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/scopex_cli",
+      "args": [
+        "--replay", "${workspaceFolder}/examples/orders_demo.csv",
+        "--depth", "5",
+        "--print-trades"
+      ],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "externalConsole": false,
+      "stopAtEntry": false,
+      "setupCommands": [
+        { "text": "-enable-pretty-printing" },
+        { "text": "set print pretty on" },
+        { "text": "set print object on" }
+      ]
+    },
+
+    {
+      "name": "Debug scopex_cli (CMake target)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${command:cmake.launchTargetPath}",
+      "args": [
+        "--replay", "${workspaceFolder}/examples/orders_demo.csv",
+        "--depth", "5",
+        "--print-trades"
+      ],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "externalConsole": false,
+      "stopAtEntry": false,
+      "setupCommands": [
+        { "text": "-enable-pretty-printing" },
+        { "text": "set print pretty on" },
+        { "text": "set print object on" }
+      ]
+    }
+  ]
+}
