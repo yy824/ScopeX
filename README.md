@@ -8,6 +8,7 @@ See the [BUILDING](BUILDING.md) document.
 
 - install
   ```sudo apt update```
+  
   ```sudo apt install -y build-essential ninja-build cmake gdb```
 
 - developement
