@@ -6,6 +6,10 @@ This is the scopeX project.
 
 See the [BUILDING](BUILDING.md) document.
 
+- install
+  ```sudo apt update```
+  ```sudo apt install -y build-essential ninja-build cmake gdb```
+
 - developement
   run ```rm -rf build``` at first, in case of changed cmake.
   
