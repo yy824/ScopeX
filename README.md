@@ -14,7 +14,7 @@ See the [BUILDING](BUILDING.md) document.
   
   optional:
   
-  ```sudo apt install doxygen doxygen-doc doxygen-gui graphviz texlive```
+  ```sudo apt install doxygen doxygen-doc doxygen-gui graphviz texlive sphinx```
 
 - developement
   
