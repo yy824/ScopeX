@@ -8,6 +8,9 @@
  */
 #pragma once
 
+#include <atomic>
+#include <cstdint>
+#include <limits>
 #include <optional>
 #include <vector>
 #include <memory>
@@ -108,6 +111,29 @@ struct locate_t {
     std::deque<order_t>::iterator q_it;     ///< point to order in the price level queue
 };
 
+/**
+ * @brief engine::engine_metrics_t is a structure for tracking various performance and state metrics of the trading engine, including counts of added and canceled orders, trade statistics, order book state hints, and latency statistics for order additions.
+ * 
+ */
+struct engine_metrics_t {
+    // volume & counts
+    std::uint64_t add_orders = 0; ///< number of orders added
+    std::uint64_t cancel_orders = 0; ///< number of orders canceled
+    std::uint64_t trades = 0; ///< number of trades executed
+    std::uint64_t traded_qty = 0; ///< total quantity traded
+
+    // order_book state hints
+    std::uint64_t best_bid_px = 0; ///< best bid price
+    std::uint64_t best_bid_qty = 0; ///< best bid quantity
+    std::uint64_t best_ask_px = 0; ///< best ask price
+    std::uint64_t best_ask_qty = 0; ///< best ask quantity
+
+    // latency rough stats (ns)
+    // basic statistics: min/max/avg
+    std::uint64_t add_min_ns = std::numeric_limits<std::uint64_t>::max(); ///< mininum nanoseconds
+    std::uint64_t add_max_ns = 0; ///< maximum nanoseconds
+    std::uint64_t add_total_ns = 0; ///< total nanoseconds
+};
 
 // --------- Engine Interface ---------
 
@@ -123,6 +149,7 @@ class IEngine {
     virtual add_result_t add_order(const order_cmd_t& cmd) = 0;
     virtual bool cancel_order(id_t order_id) = 0;
     virtual snapshot_t snapshot(int depth) const = 0;
+    virtual engine_metrics_t metrics() const = 0;
 };
 
 // Factory function to create an engine instance

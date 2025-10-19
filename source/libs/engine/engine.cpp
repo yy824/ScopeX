@@ -11,6 +11,7 @@
 #include <map>
 #include <deque>
 #include <unordered_map>
+#include <chrono>
 
 namespace engine {
 
@@ -269,15 +270,26 @@ class EngineSingleThreaded final: public IEngine {
 public:
     explicit EngineSingleThreaded(const engine_config_t& config): config_(config) {}
     add_result_t add_order(const order_cmd_t& cmd) override;
-    bool cancel_order(id_t order_id) override { return ob_.cancel(order_id); };
+    bool cancel_order(id_t order_id) override 
+    { 
+        bool is_ok = ob_.cancel(order_id);
+        if(is_ok)
+        {
+            metrics_.cancel_orders++;
+        }
+
+        return is_ok; 
+    };
     snapshot_t snapshot(int depth) const override {return ob_.snapshot(depth);};
-  
+
+    engine_metrics_t metrics() const override { return metrics_; }
 
 private:
     engine_config_t config_;
     OrderBook ob_;
     id_t next_{1000};
     uint64_t seq_{0}; // internal sequence number for ordering
+    mutable engine_metrics_t metrics_;
 };
 
 add_result_t EngineSingleThreaded::add_order(const order_cmd_t& cmd)
@@ -293,6 +305,10 @@ add_result_t EngineSingleThreaded::add_order(const order_cmd_t& cmd)
         return add_result_t{ .status=OrderStatus::BAD_INPUT, .order_id=0, .trades={}, .filled_qty=0, .remaining_qty=cmd.qty };
     }
 
+    // Measurement variables
+    const auto t_start = std::chrono::high_resolution_clock::now();
+
+    // logic variables
     // 1. assign a new order id if not provided.
     id_t order_id = cmd.order_id.value_or(next_++);
 
@@ -378,6 +394,45 @@ add_result_t EngineSingleThreaded::add_order(const order_cmd_t& cmd)
                       (filled_qty > 0 ? OrderStatus::PARTIAL : OrderStatus::OK));
         }
     }
+
+    // timing calculation
+    const auto t_end = std::chrono::high_resolution_clock::now();
+    const auto duration_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start);
+
+    metrics_.add_orders++;
+    metrics_.trades += trades.size();
+    for(auto& trade: trades) { metrics_.traded_qty += trade.qty; }
+
+    metrics_.add_total_ns += duration_ns.count();
+    // find min and max latency
+    metrics_.add_min_ns = std::min(metrics_.add_min_ns, static_cast<uint64_t>(duration_ns.count()));
+    metrics_.add_max_ns = std::max(metrics_.add_max_ns, static_cast<uint64_t>(duration_ns.count()));
+
+    // refresh best bid/ask (O(1) speed)
+    auto snapshot_moment = this->snapshot(1);
+
+    if(!snapshot_moment.bids.empty())
+    {
+        metrics_.best_bid_px = snapshot_moment.bids[0].price;
+        metrics_.best_bid_qty = snapshot_moment.bids[0].qty;
+    }
+    else
+    {
+        metrics_.best_bid_px = 0;
+        metrics_.best_bid_qty = 0;
+    }
+
+    if(!snapshot_moment.asks.empty())
+    {
+        metrics_.best_ask_px = snapshot_moment.asks[0].price;
+        metrics_.best_ask_qty = snapshot_moment.asks[0].qty;
+    }
+    else
+    {
+        metrics_.best_ask_px = 0;
+        metrics_.best_ask_qty = 0;  
+    }
+
     return add_result_t{ .status=status, .order_id=order_id, .trades=std::move(trades), .filled_qty=filled_qty, .remaining_qty=remaining_qty};
 }
 
