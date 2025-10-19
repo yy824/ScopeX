@@ -1,0 +1,680 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; scopeX 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to scopeX’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            scopeX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#_CPPv46engine"><code class="docutils literal notranslate"><span class="pre">engine</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine7price_tE"><code class="docutils literal notranslate"><span class="pre">price_t</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine5qty_tE"><code class="docutils literal notranslate"><span class="pre">qty_t</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine4id_tE"><code class="docutils literal notranslate"><span class="pre">id_t</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine4SideE"><code class="docutils literal notranslate"><span class="pre">Side</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine4Side3BUYE"><code class="docutils literal notranslate"><span class="pre">BUY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine4Side4SELLE"><code class="docutils literal notranslate"><span class="pre">SELL</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine9OrderTypeE"><code class="docutils literal notranslate"><span class="pre">OrderType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine9OrderType5LIMITE"><code class="docutils literal notranslate"><span class="pre">LIMIT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine9OrderType6MARKETE"><code class="docutils literal notranslate"><span class="pre">MARKET</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine11TimeInForceE"><code class="docutils literal notranslate"><span class="pre">TimeInForce</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11TimeInForce3GTCE"><code class="docutils literal notranslate"><span class="pre">GTC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11TimeInForce3IOCE"><code class="docutils literal notranslate"><span class="pre">IOC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11TimeInForce3FOKE"><code class="docutils literal notranslate"><span class="pre">FOK</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine11OrderStatusE"><code class="docutils literal notranslate"><span class="pre">OrderStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11OrderStatus2OKE"><code class="docutils literal notranslate"><span class="pre">OK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11OrderStatus7PARTIALE"><code class="docutils literal notranslate"><span class="pre">PARTIAL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11OrderStatus6FILLEDE"><code class="docutils literal notranslate"><span class="pre">FILLED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11OrderStatus6REJECTE"><code class="docutils literal notranslate"><span class="pre">REJECT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11OrderStatus8FOK_FAILE"><code class="docutils literal notranslate"><span class="pre">FOK_FAIL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11OrderStatus10EMPTY_BOOKE"><code class="docutils literal notranslate"><span class="pre">EMPTY_BOOK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11OrderStatus9BAD_INPUTE"><code class="docutils literal notranslate"><span class="pre">BAD_INPUT</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine11make_engineERK15engine_config_t"><code class="docutils literal notranslate"><span class="pre">make_engine()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine12add_result_tE"><code class="docutils literal notranslate"><span class="pre">engine::add_result_t</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine12add_result_t6statusE"><code class="docutils literal notranslate"><span class="pre">status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine12add_result_t8order_idE"><code class="docutils literal notranslate"><span class="pre">order_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine12add_result_t6tradesE"><code class="docutils literal notranslate"><span class="pre">trades</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine12add_result_t10filled_qtyE"><code class="docutils literal notranslate"><span class="pre">filled_qty</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine12add_result_t13remaining_qtyE"><code class="docutils literal notranslate"><span class="pre">remaining_qty</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine15engine_config_tE"><code class="docutils literal notranslate"><span class="pre">engine::engine_config_t</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine15engine_config_t17market_gtc_as_iocE"><code class="docutils literal notranslate"><span class="pre">market_gtc_as_ioc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine15engine_config_t17market_max_levelsE"><code class="docutils literal notranslate"><span class="pre">market_max_levels</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine20EngineSingleThreadedE"><code class="docutils literal notranslate"><span class="pre">engine::EngineSingleThreaded</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine20EngineSingleThreaded20EngineSingleThreadedERK15engine_config_t"><code class="docutils literal notranslate"><span class="pre">EngineSingleThreaded()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine20EngineSingleThreaded9add_orderERK11order_cmd_t"><code class="docutils literal notranslate"><span class="pre">add_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine20EngineSingleThreaded12cancel_orderE4id_t"><code class="docutils literal notranslate"><span class="pre">cancel_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK6engine20EngineSingleThreaded8snapshotEi"><code class="docutils literal notranslate"><span class="pre">snapshot()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine7IEngineE"><code class="docutils literal notranslate"><span class="pre">engine::IEngine</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7IEngineD0Ev"><code class="docutils literal notranslate"><span class="pre">~IEngine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7IEngine9add_orderERK11order_cmd_t"><code class="docutils literal notranslate"><span class="pre">add_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7IEngine12cancel_orderE4id_t"><code class="docutils literal notranslate"><span class="pre">cancel_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK6engine7IEngine8snapshotEi"><code class="docutils literal notranslate"><span class="pre">snapshot()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine8locate_tE"><code class="docutils literal notranslate"><span class="pre">engine::locate_t</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine8locate_t4sideE"><code class="docutils literal notranslate"><span class="pre">side</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine8locate_t6bid_itE"><code class="docutils literal notranslate"><span class="pre">bid_it</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine8locate_t6ask_itE"><code class="docutils literal notranslate"><span class="pre">ask_it</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine8locate_t4q_itE"><code class="docutils literal notranslate"><span class="pre">q_it</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine11order_cmd_tE"><code class="docutils literal notranslate"><span class="pre">engine::order_cmd_t</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11order_cmd_t8order_idE"><code class="docutils literal notranslate"><span class="pre">order_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11order_cmd_t4sideE"><code class="docutils literal notranslate"><span class="pre">side</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11order_cmd_t10order_typeE"><code class="docutils literal notranslate"><span class="pre">order_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11order_cmd_t13time_in_forceE"><code class="docutils literal notranslate"><span class="pre">time_in_force</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11order_cmd_t5priceE"><code class="docutils literal notranslate"><span class="pre">price</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11order_cmd_t3qtyE"><code class="docutils literal notranslate"><span class="pre">qty</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine11order_cmd_t9timestampE"><code class="docutils literal notranslate"><span class="pre">timestamp</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine7order_tE"><code class="docutils literal notranslate"><span class="pre">engine::order_t</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7order_t2idE"><code class="docutils literal notranslate"><span class="pre">id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7order_t4sideE"><code class="docutils literal notranslate"><span class="pre">side</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7order_t5priceE"><code class="docutils literal notranslate"><span class="pre">price</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7order_t3qtyE"><code class="docutils literal notranslate"><span class="pre">qty</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7order_t7seq_numE"><code class="docutils literal notranslate"><span class="pre">seq_num</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine9OrderBookE"><code class="docutils literal notranslate"><span class="pre">engine::OrderBook</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine9OrderBook9add_limitE7order_t11TimeInForceNSt8uint64_tE"><code class="docutils literal notranslate"><span class="pre">add_limit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine9OrderBook10add_marketE7order_tNSt8uint64_tENSt8uint16_tERb"><code class="docutils literal notranslate"><span class="pre">add_market()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine9OrderBook6cancelE4id_t"><code class="docutils literal notranslate"><span class="pre">cancel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK6engine9OrderBook8snapshotEi"><code class="docutils literal notranslate"><span class="pre">snapshot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK6engine9OrderBook22available_to_buy_up_toE7price_t"><code class="docutils literal notranslate"><span class="pre">available_to_buy_up_to()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK6engine9OrderBook25available_to_sell_down_toE7price_t"><code class="docutils literal notranslate"><span class="pre">available_to_sell_down_to()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4NK6engine9OrderBook16available_marketE4SideNSt8uint16_tE"><code class="docutils literal notranslate"><span class="pre">available_market()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine16snapshot_level_tE"><code class="docutils literal notranslate"><span class="pre">engine::snapshot_level_t</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine16snapshot_level_t5priceE"><code class="docutils literal notranslate"><span class="pre">price</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine16snapshot_level_t3qtyE"><code class="docutils literal notranslate"><span class="pre">qty</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine10snapshot_tE"><code class="docutils literal notranslate"><span class="pre">engine::snapshot_t</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine10snapshot_t4bidsE"><code class="docutils literal notranslate"><span class="pre">bids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine10snapshot_t4asksE"><code class="docutils literal notranslate"><span class="pre">asks</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_CPPv4N6engine7trade_tE"><code class="docutils literal notranslate"><span class="pre">engine::trade_t</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7trade_t5takerE"><code class="docutils literal notranslate"><span class="pre">taker</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7trade_t5makerE"><code class="docutils literal notranslate"><span class="pre">maker</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7trade_t5priceE"><code class="docutils literal notranslate"><span class="pre">price</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7trade_t3qtyE"><code class="docutils literal notranslate"><span class="pre">qty</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#_CPPv4N6engine7trade_t9timestampE"><code class="docutils literal notranslate"><span class="pre">timestamp</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">scopeX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv46engine">
+<span id="_CPPv36engine"></span><span id="_CPPv26engine"></span><span id="engine"></span><span class="target" id="namespaceengine"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">engine</span></span></span><a class="headerlink" href="#_CPPv46engine" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7price_tE">
+<span id="_CPPv3N6engine7price_tE"></span><span id="_CPPv2N6engine7price_tE"></span><span class="target" id="engine_8hpp_1ac4f8663afed2620018ad11dbba1149a0"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">price_t</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">int64_t</span></span><a class="headerlink" href="#_CPPv4N6engine7price_tE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine5qty_tE">
+<span id="_CPPv3N6engine5qty_tE"></span><span id="_CPPv2N6engine5qty_tE"></span><span class="target" id="engine_8hpp_1aa531c407c3fd831aa10ccd65f31f8eb6"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">qty_t</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">int64_t</span></span><a class="headerlink" href="#_CPPv4N6engine5qty_tE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine4id_tE">
+<span id="_CPPv3N6engine4id_tE"></span><span id="_CPPv2N6engine4id_tE"></span><span class="target" id="engine_8hpp_1a475be282355e3fdee1717f4652e97a7b"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">id_t</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">uint64_t</span></span><a class="headerlink" href="#_CPPv4N6engine4id_tE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum-class">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine4SideE">
+<span id="_CPPv3N6engine4SideE"></span><span id="_CPPv2N6engine4SideE"></span><span class="target" id="engine_8hpp_1a85da242ca53db795e56a7c43524645d0"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Side</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><a class="headerlink" href="#_CPPv4N6engine4SideE" title="Link to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine4Side3BUYE">
+<span id="_CPPv3N6engine4Side3BUYE"></span><span id="_CPPv2N6engine4Side3BUYE"></span><span class="target" id="engine_8hpp_1a85da242ca53db795e56a7c43524645d0ac45b496ec0828772c8088e4118f09b33"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BUY</span></span></span><a class="headerlink" href="#_CPPv4N6engine4Side3BUYE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine4Side4SELLE">
+<span id="_CPPv3N6engine4Side4SELLE"></span><span id="_CPPv2N6engine4Side4SELLE"></span><span class="target" id="engine_8hpp_1a85da242ca53db795e56a7c43524645d0a860926e6fc3f191e18ee7a98259164b8"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SELL</span></span></span><a class="headerlink" href="#_CPPv4N6engine4Side4SELLE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum-class">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine9OrderTypeE">
+<span id="_CPPv3N6engine9OrderTypeE"></span><span id="_CPPv2N6engine9OrderTypeE"></span><span class="target" id="engine_8hpp_1a01b89c4d1e940e24bc13d1380a6f0ccf"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OrderType</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><a class="headerlink" href="#_CPPv4N6engine9OrderTypeE" title="Link to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine9OrderType5LIMITE">
+<span id="_CPPv3N6engine9OrderType5LIMITE"></span><span id="_CPPv2N6engine9OrderType5LIMITE"></span><span class="target" id="engine_8hpp_1a01b89c4d1e940e24bc13d1380a6f0ccfa3d49b5cb41d88e381beb0d887d7023a2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LIMIT</span></span></span><a class="headerlink" href="#_CPPv4N6engine9OrderType5LIMITE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine9OrderType6MARKETE">
+<span id="_CPPv3N6engine9OrderType6MARKETE"></span><span id="_CPPv2N6engine9OrderType6MARKETE"></span><span class="target" id="engine_8hpp_1a01b89c4d1e940e24bc13d1380a6f0ccfaffb8d99dc885d37eec36c5497244cba8"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MARKET</span></span></span><a class="headerlink" href="#_CPPv4N6engine9OrderType6MARKETE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum-class">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11TimeInForceE">
+<span id="_CPPv3N6engine11TimeInForceE"></span><span id="_CPPv2N6engine11TimeInForceE"></span><span class="target" id="engine_8hpp_1a4d486ba9c7fcba99ac578099fcabb119"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TimeInForce</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><a class="headerlink" href="#_CPPv4N6engine11TimeInForceE" title="Link to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11TimeInForce3GTCE">
+<span id="_CPPv3N6engine11TimeInForce3GTCE"></span><span id="_CPPv2N6engine11TimeInForce3GTCE"></span><span class="target" id="engine_8hpp_1a4d486ba9c7fcba99ac578099fcabb119a87b20a4d7f9fae0a5b12c2b9c680584b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GTC</span></span></span><a class="headerlink" href="#_CPPv4N6engine11TimeInForce3GTCE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11TimeInForce3IOCE">
+<span id="_CPPv3N6engine11TimeInForce3IOCE"></span><span id="_CPPv2N6engine11TimeInForce3IOCE"></span><span class="target" id="engine_8hpp_1a4d486ba9c7fcba99ac578099fcabb119a7245a636843f38ae56d5862d502a4303"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IOC</span></span></span><a class="headerlink" href="#_CPPv4N6engine11TimeInForce3IOCE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11TimeInForce3FOKE">
+<span id="_CPPv3N6engine11TimeInForce3FOKE"></span><span id="_CPPv2N6engine11TimeInForce3FOKE"></span><span class="target" id="engine_8hpp_1a4d486ba9c7fcba99ac578099fcabb119a9650d9d6d673551228bb1042f482459f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FOK</span></span></span><a class="headerlink" href="#_CPPv4N6engine11TimeInForce3FOKE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum-class">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11OrderStatusE">
+<span id="_CPPv3N6engine11OrderStatusE"></span><span id="_CPPv2N6engine11OrderStatusE"></span><span class="target" id="engine_8hpp_1af1c65d9404241a236855e8f357888b42"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OrderStatus</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><a class="headerlink" href="#_CPPv4N6engine11OrderStatusE" title="Link to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11OrderStatus2OKE">
+<span id="_CPPv3N6engine11OrderStatus2OKE"></span><span id="_CPPv2N6engine11OrderStatus2OKE"></span><span class="target" id="engine_8hpp_1af1c65d9404241a236855e8f357888b42ae0aa021e21dddbd6d8cecec71e9cf564"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OK</span></span></span><a class="headerlink" href="#_CPPv4N6engine11OrderStatus2OKE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11OrderStatus7PARTIALE">
+<span id="_CPPv3N6engine11OrderStatus7PARTIALE"></span><span id="_CPPv2N6engine11OrderStatus7PARTIALE"></span><span class="target" id="engine_8hpp_1af1c65d9404241a236855e8f357888b42afba5cdfa4bcb408f641c743519a0fe19"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PARTIAL</span></span></span><a class="headerlink" href="#_CPPv4N6engine11OrderStatus7PARTIALE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11OrderStatus6FILLEDE">
+<span id="_CPPv3N6engine11OrderStatus6FILLEDE"></span><span id="_CPPv2N6engine11OrderStatus6FILLEDE"></span><span class="target" id="engine_8hpp_1af1c65d9404241a236855e8f357888b42a5b053ae8b6dc09eed2aa8c3a07163a7a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FILLED</span></span></span><a class="headerlink" href="#_CPPv4N6engine11OrderStatus6FILLEDE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11OrderStatus6REJECTE">
+<span id="_CPPv3N6engine11OrderStatus6REJECTE"></span><span id="_CPPv2N6engine11OrderStatus6REJECTE"></span><span class="target" id="engine_8hpp_1af1c65d9404241a236855e8f357888b42a59b228d9fec9b88833bfe5d812ed8ad4"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">REJECT</span></span></span><a class="headerlink" href="#_CPPv4N6engine11OrderStatus6REJECTE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11OrderStatus8FOK_FAILE">
+<span id="_CPPv3N6engine11OrderStatus8FOK_FAILE"></span><span id="_CPPv2N6engine11OrderStatus8FOK_FAILE"></span><span class="target" id="engine_8hpp_1af1c65d9404241a236855e8f357888b42a9f206fbf3f346c172c20283e73e55e1d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FOK_FAIL</span></span></span><a class="headerlink" href="#_CPPv4N6engine11OrderStatus8FOK_FAILE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11OrderStatus10EMPTY_BOOKE">
+<span id="_CPPv3N6engine11OrderStatus10EMPTY_BOOKE"></span><span id="_CPPv2N6engine11OrderStatus10EMPTY_BOOKE"></span><span class="target" id="engine_8hpp_1af1c65d9404241a236855e8f357888b42a2b53de1be86c4d087c624f2e8c935eb2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EMPTY_BOOK</span></span></span><a class="headerlink" href="#_CPPv4N6engine11OrderStatus10EMPTY_BOOKE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11OrderStatus9BAD_INPUTE">
+<span id="_CPPv3N6engine11OrderStatus9BAD_INPUTE"></span><span id="_CPPv2N6engine11OrderStatus9BAD_INPUTE"></span><span class="target" id="engine_8hpp_1af1c65d9404241a236855e8f357888b42a5a159a4278f76743500af8ba0211ea03"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BAD_INPUT</span></span></span><a class="headerlink" href="#_CPPv4N6engine11OrderStatus9BAD_INPUTE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11make_engineERK15engine_config_t">
+<span id="_CPPv3N6engine11make_engineERK15engine_config_t"></span><span id="_CPPv2N6engine11make_engineERK15engine_config_t"></span><span id="engine::make_engine__engine_config_tCR"></span><span class="target" id="engine_8hpp_1a58b623aac3ec19e2f31aa8034543256b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">unique_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine7IEngineE" title="engine::IEngine"><span class="n"><span class="pre">IEngine</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">make_engine</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N6engine15engine_config_tE" title="engine::engine_config_t"><span class="n"><span class="pre">engine_config_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6engine11make_engineERK15engine_config_t" title="Link to this definition"></a><br /></dt>
+<dd><p>create a unique pointer of engine for future extension, can create different engine implementations based on config </p>
+</dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine12add_result_tE">
+<span id="_CPPv3N6engine12add_result_tE"></span><span id="_CPPv2N6engine12add_result_tE"></span><span id="engine::add_result_t"></span><span class="target" id="structengine_1_1add__result__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">add_result_t</span></span></span><a class="headerlink" href="#_CPPv4N6engine12add_result_tE" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine12add_result_t6statusE">
+<span id="_CPPv3N6engine12add_result_t6statusE"></span><span id="_CPPv2N6engine12add_result_t6statusE"></span><span id="engine::add_result_t::status__OrderStatus"></span><span class="target" id="structengine_1_1add__result__t_1a9ab22fe8723593d3b4d480a7c980210a"></span><a class="reference internal" href="#_CPPv4N6engine11OrderStatusE" title="engine::OrderStatus"><span class="n"><span class="pre">OrderStatus</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">status</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><a class="reference internal" href="#_CPPv4N6engine11OrderStatusE" title="engine::OrderStatus"><span class="n"><span class="pre">OrderStatus</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N6engine11OrderStatus2OKE" title="engine::OrderStatus::OK"><span class="n"><span class="pre">OK</span></span></a><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine12add_result_t6statusE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine12add_result_t8order_idE">
+<span id="_CPPv3N6engine12add_result_t8order_idE"></span><span id="_CPPv2N6engine12add_result_t8order_idE"></span><span id="engine::add_result_t::order_id__id_t"></span><span class="target" id="structengine_1_1add__result__t_1a7e362e3cd1a932f26d1e57ee7e577ae5"></span><a class="reference internal" href="#_CPPv4N6engine4id_tE" title="engine::id_t"><span class="n"><span class="pre">id_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">order_id</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine12add_result_t8order_idE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine12add_result_t6tradesE">
+<span id="_CPPv3N6engine12add_result_t6tradesE"></span><span id="_CPPv2N6engine12add_result_t6tradesE"></span><span id="engine::add_result_t::trades__std::vector:trade_t:"></span><span class="target" id="structengine_1_1add__result__t_1ae2722ed966e98ac5fe94371358e59bce"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine7trade_tE" title="engine::trade_t"><span class="n"><span class="pre">trade_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">trades</span></span></span><a class="headerlink" href="#_CPPv4N6engine12add_result_t6tradesE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine12add_result_t10filled_qtyE">
+<span id="_CPPv3N6engine12add_result_t10filled_qtyE"></span><span id="_CPPv2N6engine12add_result_t10filled_qtyE"></span><span id="engine::add_result_t::filled_qty__qty_t"></span><span class="target" id="structengine_1_1add__result__t_1a298a2af0da223ded845cbb84e622449d"></span><a class="reference internal" href="#_CPPv4N6engine5qty_tE" title="engine::qty_t"><span class="n"><span class="pre">qty_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">filled_qty</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine12add_result_t10filled_qtyE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine12add_result_t13remaining_qtyE">
+<span id="_CPPv3N6engine12add_result_t13remaining_qtyE"></span><span id="_CPPv2N6engine12add_result_t13remaining_qtyE"></span><span id="engine::add_result_t::remaining_qty__qty_t"></span><span class="target" id="structengine_1_1add__result__t_1a462d4c94aa858f0ebe9cf646ac53d289"></span><a class="reference internal" href="#_CPPv4N6engine5qty_tE" title="engine::qty_t"><span class="n"><span class="pre">qty_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">remaining_qty</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine12add_result_t13remaining_qtyE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine15engine_config_tE">
+<span id="_CPPv3N6engine15engine_config_tE"></span><span id="_CPPv2N6engine15engine_config_tE"></span><span id="engine::engine_config_t"></span><span class="target" id="structengine_1_1engine__config__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">engine_config_t</span></span></span><a class="headerlink" href="#_CPPv4N6engine15engine_config_tE" title="Link to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;engine.hpp&gt;</em></div>
+<p>Engine configuration options. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine15engine_config_t17market_gtc_as_iocE">
+<span id="_CPPv3N6engine15engine_config_t17market_gtc_as_iocE"></span><span id="_CPPv2N6engine15engine_config_t17market_gtc_as_iocE"></span><span id="engine::engine_config_t::market_gtc_as_ioc__b"></span><span class="target" id="structengine_1_1engine__config__t_1ab343523bc57f0e9fba9029e02ae277bb"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">market_gtc_as_ioc</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="k"><span class="pre">true</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine15engine_config_t17market_gtc_as_iocE" title="Link to this definition"></a><br /></dt>
+<dd><p>MARKET + GTC : true -&gt; IOC by default, false -&gt; REJECT. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine15engine_config_t17market_max_levelsE">
+<span id="_CPPv3N6engine15engine_config_t17market_max_levelsE"></span><span id="_CPPv2N6engine15engine_config_t17market_max_levelsE"></span><span id="engine::engine_config_t::market_max_levels__uint64_t"></span><span class="target" id="structengine_1_1engine__config__t_1aa90a4415e595dc651763127bd4b6b187"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">market_max_levels</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine15engine_config_t17market_max_levelsE" title="Link to this definition"></a><br /></dt>
+<dd><p>optional: Max levels in market depth snapshot </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine20EngineSingleThreadedE">
+<span id="_CPPv3N6engine20EngineSingleThreadedE"></span><span id="_CPPv2N6engine20EngineSingleThreadedE"></span><span id="engine::EngineSingleThreaded"></span><span class="target" id="classengine_1_1EngineSingleThreaded"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EngineSingleThreaded</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv46engine" title="engine"><span class="n"><span class="pre">engine</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N6engine7IEngineE" title="engine::IEngine"><span class="n"><span class="pre">IEngine</span></span></a><a class="headerlink" href="#_CPPv4N6engine20EngineSingleThreadedE" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine20EngineSingleThreaded20EngineSingleThreadedERK15engine_config_t">
+<span id="_CPPv3N6engine20EngineSingleThreaded20EngineSingleThreadedERK15engine_config_t"></span><span id="_CPPv2N6engine20EngineSingleThreaded20EngineSingleThreadedERK15engine_config_t"></span><span id="engine::EngineSingleThreaded::EngineSingleThreaded__engine_config_tCR"></span><span class="target" id="classengine_1_1EngineSingleThreaded_1adcd5fc8aa261f546d6718ce9237b328b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">EngineSingleThreaded</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N6engine15engine_config_tE" title="engine::engine_config_t"><span class="n"><span class="pre">engine_config_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6engine20EngineSingleThreaded20EngineSingleThreadedERK15engine_config_t" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine20EngineSingleThreaded9add_orderERK11order_cmd_t">
+<span id="_CPPv3N6engine20EngineSingleThreaded9add_orderERK11order_cmd_t"></span><span id="_CPPv2N6engine20EngineSingleThreaded9add_orderERK11order_cmd_t"></span><span id="engine::EngineSingleThreaded::add_order__order_cmd_tCR"></span><span class="target" id="classengine_1_1EngineSingleThreaded_1afcfeac1e3098c29c8fd208c306016397"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N6engine12add_result_tE" title="engine::add_result_t"><span class="n"><span class="pre">add_result_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">add_order</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N6engine11order_cmd_tE" title="engine::order_cmd_t"><span class="n"><span class="pre">order_cmd_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">cmd</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N6engine20EngineSingleThreaded9add_orderERK11order_cmd_t" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine20EngineSingleThreaded12cancel_orderE4id_t">
+<span id="_CPPv3N6engine20EngineSingleThreaded12cancel_orderE4id_t"></span><span id="_CPPv2N6engine20EngineSingleThreaded12cancel_orderE4id_t"></span><span id="engine::EngineSingleThreaded::cancel_order__id_t"></span><span class="target" id="classengine_1_1EngineSingleThreaded_1a8b970834a71fad118854080e219cbb87"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cancel_order</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N6engine4id_tE" title="engine::id_t"><span class="n"><span class="pre">id_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">order_id</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N6engine20EngineSingleThreaded12cancel_orderE4id_t" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6engine20EngineSingleThreaded8snapshotEi">
+<span id="_CPPv3NK6engine20EngineSingleThreaded8snapshotEi"></span><span id="_CPPv2NK6engine20EngineSingleThreaded8snapshotEi"></span><span id="engine::EngineSingleThreaded::snapshot__iC"></span><span class="target" id="classengine_1_1EngineSingleThreaded_1a124f89e2453475874d03658ab50868c1"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N6engine10snapshot_tE" title="engine::snapshot_t"><span class="n"><span class="pre">snapshot_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">snapshot</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">depth</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4NK6engine20EngineSingleThreaded8snapshotEi" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7IEngineE">
+<span id="_CPPv3N6engine7IEngineE"></span><span id="_CPPv2N6engine7IEngineE"></span><span id="engine::IEngine"></span><span class="target" id="classengine_1_1IEngine"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IEngine</span></span></span><a class="headerlink" href="#_CPPv4N6engine7IEngineE" title="Link to this definition"></a><br /></dt>
+<dd><p>Subclassed by <a class="reference internal" href="#classengine_1_1EngineSingleThreaded"><span class="std std-ref">engine::EngineSingleThreaded</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7IEngineD0Ev">
+<span id="_CPPv3N6engine7IEngineD0Ev"></span><span id="_CPPv2N6engine7IEngineD0Ev"></span><span id="engine::IEngine::~IEngine"></span><span class="target" id="classengine_1_1IEngine_1a5536aec1045764c9564d36957078d032"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~IEngine</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">default</span></span><a class="headerlink" href="#_CPPv4N6engine7IEngineD0Ev" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7IEngine9add_orderERK11order_cmd_t">
+<span id="_CPPv3N6engine7IEngine9add_orderERK11order_cmd_t"></span><span id="_CPPv2N6engine7IEngine9add_orderERK11order_cmd_t"></span><span id="engine::IEngine::add_order__order_cmd_tCR"></span><span class="target" id="classengine_1_1IEngine_1a110ab7beabf2597d255159e024b38cc8"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N6engine12add_result_tE" title="engine::add_result_t"><span class="n"><span class="pre">add_result_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">add_order</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N6engine11order_cmd_tE" title="engine::order_cmd_t"><span class="n"><span class="pre">order_cmd_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">cmd</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N6engine7IEngine9add_orderERK11order_cmd_t" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7IEngine12cancel_orderE4id_t">
+<span id="_CPPv3N6engine7IEngine12cancel_orderE4id_t"></span><span id="_CPPv2N6engine7IEngine12cancel_orderE4id_t"></span><span id="engine::IEngine::cancel_order__id_t"></span><span class="target" id="classengine_1_1IEngine_1a1ce60a2219d2369545e87312eef425a3"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cancel_order</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N6engine4id_tE" title="engine::id_t"><span class="n"><span class="pre">id_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">order_id</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N6engine7IEngine12cancel_orderE4id_t" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6engine7IEngine8snapshotEi">
+<span id="_CPPv3NK6engine7IEngine8snapshotEi"></span><span id="_CPPv2NK6engine7IEngine8snapshotEi"></span><span id="engine::IEngine::snapshot__iC"></span><span class="target" id="classengine_1_1IEngine_1a37e66b07b9e5d464b36f6c922dc65e4a"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N6engine10snapshot_tE" title="engine::snapshot_t"><span class="n"><span class="pre">snapshot_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">snapshot</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">depth</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4NK6engine7IEngine8snapshotEi" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine8locate_tE">
+<span id="_CPPv3N6engine8locate_tE"></span><span id="_CPPv2N6engine8locate_tE"></span><span id="engine::locate_t"></span><span class="target" id="structengine_1_1locate__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">locate_t</span></span></span><a class="headerlink" href="#_CPPv4N6engine8locate_tE" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine8locate_t4sideE">
+<span id="_CPPv3N6engine8locate_t4sideE"></span><span id="_CPPv2N6engine8locate_t4sideE"></span><span id="engine::locate_t::side__Side"></span><span class="target" id="structengine_1_1locate__t_1aa42cde0087dedfe84336a3de5214cc88"></span><a class="reference internal" href="#_CPPv4N6engine4SideE" title="engine::Side"><span class="n"><span class="pre">Side</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">side</span></span></span><a class="headerlink" href="#_CPPv4N6engine8locate_t4sideE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine8locate_t6bid_itE">
+<span id="_CPPv3N6engine8locate_t6bid_itE"></span><span id="_CPPv2N6engine8locate_t6bid_itE"></span><span id="engine::locate_t::bid_it__std::map:price_t.std::deque:order_t:.std::greater:::::iterator"></span><span class="target" id="structengine_1_1locate__t_1a9df8e11bd65287868c64c48bdb561d5f"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">map</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine7price_tE" title="engine::price_t"><span class="n"><span class="pre">price_t</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">deque</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine7order_tE" title="engine::order_t"><span class="n"><span class="pre">order_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">greater</span></span><span class="p"><span class="pre">&lt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bid_it</span></span></span><a class="headerlink" href="#_CPPv4N6engine8locate_t6bid_itE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine8locate_t6ask_itE">
+<span id="_CPPv3N6engine8locate_t6ask_itE"></span><span id="_CPPv2N6engine8locate_t6ask_itE"></span><span id="engine::locate_t::ask_it__std::map:price_t.std::deque:order_t:.std::less:::::iterator"></span><span class="target" id="structengine_1_1locate__t_1ac5380fd14168468b1f4402ff28723375"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">map</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine7price_tE" title="engine::price_t"><span class="n"><span class="pre">price_t</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">deque</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine7order_tE" title="engine::order_t"><span class="n"><span class="pre">order_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">less</span></span><span class="p"><span class="pre">&lt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ask_it</span></span></span><a class="headerlink" href="#_CPPv4N6engine8locate_t6ask_itE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine8locate_t4q_itE">
+<span id="_CPPv3N6engine8locate_t4q_itE"></span><span id="_CPPv2N6engine8locate_t4q_itE"></span><span id="engine::locate_t::q_it__std::deque:order_t:::iterator"></span><span class="target" id="structengine_1_1locate__t_1a7a1b0caf5e47458a4346a38d52a65e06"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">deque</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine7order_tE" title="engine::order_t"><span class="n"><span class="pre">order_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">q_it</span></span></span><a class="headerlink" href="#_CPPv4N6engine8locate_t4q_itE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11order_cmd_tE">
+<span id="_CPPv3N6engine11order_cmd_tE"></span><span id="_CPPv2N6engine11order_cmd_tE"></span><span id="engine::order_cmd_t"></span><span class="target" id="structengine_1_1order__cmd__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">order_cmd_t</span></span></span><a class="headerlink" href="#_CPPv4N6engine11order_cmd_tE" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11order_cmd_t8order_idE">
+<span id="_CPPv3N6engine11order_cmd_t8order_idE"></span><span id="_CPPv2N6engine11order_cmd_t8order_idE"></span><span id="engine::order_cmd_t::order_id__std::optional:id_t:"></span><span class="target" id="structengine_1_1order__cmd__t_1aa3aa54893fa6e762ec6b01e31d8974de"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">optional</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine4id_tE" title="engine::id_t"><span class="n"><span class="pre">id_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">order_id</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">nullopt</span></span><a class="headerlink" href="#_CPPv4N6engine11order_cmd_t8order_idE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11order_cmd_t4sideE">
+<span id="_CPPv3N6engine11order_cmd_t4sideE"></span><span id="_CPPv2N6engine11order_cmd_t4sideE"></span><span id="engine::order_cmd_t::side__Side"></span><span class="target" id="structengine_1_1order__cmd__t_1a7b51ecafcc8db3e37e37b27f71af533c"></span><a class="reference internal" href="#_CPPv4N6engine4SideE" title="engine::Side"><span class="n"><span class="pre">Side</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">side</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><a class="reference internal" href="#_CPPv4N6engine4SideE" title="engine::Side"><span class="n"><span class="pre">Side</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N6engine4Side3BUYE" title="engine::Side::BUY"><span class="n"><span class="pre">BUY</span></span></a><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine11order_cmd_t4sideE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11order_cmd_t10order_typeE">
+<span id="_CPPv3N6engine11order_cmd_t10order_typeE"></span><span id="_CPPv2N6engine11order_cmd_t10order_typeE"></span><span id="engine::order_cmd_t::order_type__OrderType"></span><span class="target" id="structengine_1_1order__cmd__t_1a9d81967817127dd19997fc70e03dc63d"></span><a class="reference internal" href="#_CPPv4N6engine9OrderTypeE" title="engine::OrderType"><span class="n"><span class="pre">OrderType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">order_type</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><a class="reference internal" href="#_CPPv4N6engine9OrderTypeE" title="engine::OrderType"><span class="n"><span class="pre">OrderType</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N6engine9OrderType5LIMITE" title="engine::OrderType::LIMIT"><span class="n"><span class="pre">LIMIT</span></span></a><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine11order_cmd_t10order_typeE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11order_cmd_t13time_in_forceE">
+<span id="_CPPv3N6engine11order_cmd_t13time_in_forceE"></span><span id="_CPPv2N6engine11order_cmd_t13time_in_forceE"></span><span id="engine::order_cmd_t::time_in_force__TimeInForce"></span><span class="target" id="structengine_1_1order__cmd__t_1a888ab9186f8ae50985476645c10972d8"></span><a class="reference internal" href="#_CPPv4N6engine11TimeInForceE" title="engine::TimeInForce"><span class="n"><span class="pre">TimeInForce</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">time_in_force</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><a class="reference internal" href="#_CPPv4N6engine11TimeInForceE" title="engine::TimeInForce"><span class="n"><span class="pre">TimeInForce</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N6engine11TimeInForce3GTCE" title="engine::TimeInForce::GTC"><span class="n"><span class="pre">GTC</span></span></a><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine11order_cmd_t13time_in_forceE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11order_cmd_t5priceE">
+<span id="_CPPv3N6engine11order_cmd_t5priceE"></span><span id="_CPPv2N6engine11order_cmd_t5priceE"></span><span id="engine::order_cmd_t::price__price_t"></span><span class="target" id="structengine_1_1order__cmd__t_1aa3fea40174909109b896e40c65fa1692"></span><a class="reference internal" href="#_CPPv4N6engine7price_tE" title="engine::price_t"><span class="n"><span class="pre">price_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">price</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine11order_cmd_t5priceE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11order_cmd_t3qtyE">
+<span id="_CPPv3N6engine11order_cmd_t3qtyE"></span><span id="_CPPv2N6engine11order_cmd_t3qtyE"></span><span id="engine::order_cmd_t::qty__qty_t"></span><span class="target" id="structengine_1_1order__cmd__t_1a116b82f3365844bb99f2f0d55b4af0e6"></span><a class="reference internal" href="#_CPPv4N6engine5qty_tE" title="engine::qty_t"><span class="n"><span class="pre">qty_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">qty</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine11order_cmd_t3qtyE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine11order_cmd_t9timestampE">
+<span id="_CPPv3N6engine11order_cmd_t9timestampE"></span><span id="_CPPv2N6engine11order_cmd_t9timestampE"></span><span id="engine::order_cmd_t::timestamp__uint64_t"></span><span class="target" id="structengine_1_1order__cmd__t_1a866acddbdd30a2c430ec7936930ee8ff"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">timestamp</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine11order_cmd_t9timestampE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7order_tE">
+<span id="_CPPv3N6engine7order_tE"></span><span id="_CPPv2N6engine7order_tE"></span><span id="engine::order_t"></span><span class="target" id="structengine_1_1order__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">order_t</span></span></span><a class="headerlink" href="#_CPPv4N6engine7order_tE" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7order_t2idE">
+<span id="_CPPv3N6engine7order_t2idE"></span><span id="_CPPv2N6engine7order_t2idE"></span><span id="engine::order_t::id__id_t"></span><span class="target" id="structengine_1_1order__t_1aaa440f760bc0215d12ad4964a40c0d15"></span><a class="reference internal" href="#_CPPv4N6engine4id_tE" title="engine::id_t"><span class="n"><span class="pre">id_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">id</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine7order_t2idE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7order_t4sideE">
+<span id="_CPPv3N6engine7order_t4sideE"></span><span id="_CPPv2N6engine7order_t4sideE"></span><span id="engine::order_t::side__Side"></span><span class="target" id="structengine_1_1order__t_1ae67e4c3a3f7bfe946f87a2cdf94f93c6"></span><a class="reference internal" href="#_CPPv4N6engine4SideE" title="engine::Side"><span class="n"><span class="pre">Side</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">side</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine7order_t4sideE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7order_t5priceE">
+<span id="_CPPv3N6engine7order_t5priceE"></span><span id="_CPPv2N6engine7order_t5priceE"></span><span id="engine::order_t::price__price_t"></span><span class="target" id="structengine_1_1order__t_1a505aa958e78174d1519b6c80f1429c47"></span><a class="reference internal" href="#_CPPv4N6engine7price_tE" title="engine::price_t"><span class="n"><span class="pre">price_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">price</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine7order_t5priceE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7order_t3qtyE">
+<span id="_CPPv3N6engine7order_t3qtyE"></span><span id="_CPPv2N6engine7order_t3qtyE"></span><span id="engine::order_t::qty__qty_t"></span><span class="target" id="structengine_1_1order__t_1a50295b288f4d15eacd3fd6717c70392b"></span><a class="reference internal" href="#_CPPv4N6engine5qty_tE" title="engine::qty_t"><span class="n"><span class="pre">qty_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">qty</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine7order_t3qtyE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7order_t7seq_numE">
+<span id="_CPPv3N6engine7order_t7seq_numE"></span><span id="_CPPv2N6engine7order_t7seq_numE"></span><span id="engine::order_t::seq_num__uint64_t"></span><span class="target" id="structengine_1_1order__t_1a1d2f0a761fc81b30edae0174e4b8c024"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">seq_num</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine7order_t7seq_numE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine9OrderBookE">
+<span id="_CPPv3N6engine9OrderBookE"></span><span id="_CPPv2N6engine9OrderBookE"></span><span id="engine::OrderBook"></span><span class="target" id="classengine_1_1OrderBook"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OrderBook</span></span></span><a class="headerlink" href="#_CPPv4N6engine9OrderBookE" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine9OrderBook9add_limitE7order_t11TimeInForceNSt8uint64_tE">
+<span id="_CPPv3N6engine9OrderBook9add_limitE7order_t11TimeInForceNSt8uint64_tE"></span><span id="_CPPv2N6engine9OrderBook9add_limitE7order_t11TimeInForceNSt8uint64_tE"></span><span id="engine::OrderBook::add_limit__order_t.TimeInForce.std::uint64_t"></span><span class="target" id="classengine_1_1OrderBook_1a647598fb72958f7e1374d89d5b8d9f46"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine7trade_tE" title="engine::trade_t"><span class="n"><span class="pre">trade_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">add_limit</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N6engine7order_tE" title="engine::order_t"><span class="n"><span class="pre">order_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">order</span></span>, <a class="reference internal" href="#_CPPv4N6engine11TimeInForceE" title="engine::TimeInForce"><span class="n"><span class="pre">TimeInForce</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">tif</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timestamp</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6engine9OrderBook9add_limitE7order_t11TimeInForceNSt8uint64_tE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine9OrderBook10add_marketE7order_tNSt8uint64_tENSt8uint16_tERb">
+<span id="_CPPv3N6engine9OrderBook10add_marketE7order_tNSt8uint64_tENSt8uint16_tERb"></span><span id="_CPPv2N6engine9OrderBook10add_marketE7order_tNSt8uint64_tENSt8uint16_tERb"></span><span id="engine::OrderBook::add_market__order_t.std::uint64_t.std::uint16_t.bR"></span><span class="target" id="classengine_1_1OrderBook_1afb3e74f8a95a3f1bad72b594f87affd8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine7trade_tE" title="engine::trade_t"><span class="n"><span class="pre">trade_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">add_market</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N6engine7order_tE" title="engine::order_t"><span class="n"><span class="pre">order_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">order</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timestamp</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">max_levels</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">empty_book</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6engine9OrderBook10add_marketE7order_tNSt8uint64_tENSt8uint16_tERb" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine9OrderBook6cancelE4id_t">
+<span id="_CPPv3N6engine9OrderBook6cancelE4id_t"></span><span id="_CPPv2N6engine9OrderBook6cancelE4id_t"></span><span id="engine::OrderBook::cancel__id_t"></span><span class="target" id="classengine_1_1OrderBook_1a703cc61958f0fcdd4606713f11527afb"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cancel</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N6engine4id_tE" title="engine::id_t"><span class="n"><span class="pre">id_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">order_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6engine9OrderBook6cancelE4id_t" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6engine9OrderBook8snapshotEi">
+<span id="_CPPv3NK6engine9OrderBook8snapshotEi"></span><span id="_CPPv2NK6engine9OrderBook8snapshotEi"></span><span id="engine::OrderBook::snapshot__iC"></span><span class="target" id="classengine_1_1OrderBook_1af951ea6a8d6baeb92f314f70d2423df0"></span><a class="reference internal" href="#_CPPv4N6engine10snapshot_tE" title="engine::snapshot_t"><span class="n"><span class="pre">snapshot_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">snapshot</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">depth</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK6engine9OrderBook8snapshotEi" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6engine9OrderBook22available_to_buy_up_toE7price_t">
+<span id="_CPPv3NK6engine9OrderBook22available_to_buy_up_toE7price_t"></span><span id="_CPPv2NK6engine9OrderBook22available_to_buy_up_toE7price_t"></span><span id="engine::OrderBook::available_to_buy_up_to__price_tC"></span><span class="target" id="classengine_1_1OrderBook_1aa89afc174b8f4643e9033a894f2f052a"></span><a class="reference internal" href="#_CPPv4N6engine5qty_tE" title="engine::qty_t"><span class="n"><span class="pre">qty_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">available_to_buy_up_to</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N6engine7price_tE" title="engine::price_t"><span class="n"><span class="pre">price_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">price</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK6engine9OrderBook22available_to_buy_up_toE7price_t" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6engine9OrderBook25available_to_sell_down_toE7price_t">
+<span id="_CPPv3NK6engine9OrderBook25available_to_sell_down_toE7price_t"></span><span id="_CPPv2NK6engine9OrderBook25available_to_sell_down_toE7price_t"></span><span id="engine::OrderBook::available_to_sell_down_to__price_tC"></span><span class="target" id="classengine_1_1OrderBook_1a2a5676086bb16b9f533155183567cc44"></span><a class="reference internal" href="#_CPPv4N6engine5qty_tE" title="engine::qty_t"><span class="n"><span class="pre">qty_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">available_to_sell_down_to</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N6engine7price_tE" title="engine::price_t"><span class="n"><span class="pre">price_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">price</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK6engine9OrderBook25available_to_sell_down_toE7price_t" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK6engine9OrderBook16available_marketE4SideNSt8uint16_tE">
+<span id="_CPPv3NK6engine9OrderBook16available_marketE4SideNSt8uint16_tE"></span><span id="_CPPv2NK6engine9OrderBook16available_marketE4SideNSt8uint16_tE"></span><span id="engine::OrderBook::available_market__Side.std::uint16_tC"></span><span class="target" id="classengine_1_1OrderBook_1aae48fd25c0ac1b6d84b503e4d646bb55"></span><a class="reference internal" href="#_CPPv4N6engine5qty_tE" title="engine::qty_t"><span class="n"><span class="pre">qty_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">available_market</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N6engine4SideE" title="engine::Side"><span class="n"><span class="pre">Side</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">side</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">max_levels</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK6engine9OrderBook16available_marketE4SideNSt8uint16_tE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine16snapshot_level_tE">
+<span id="_CPPv3N6engine16snapshot_level_tE"></span><span id="_CPPv2N6engine16snapshot_level_tE"></span><span id="engine::snapshot_level_t"></span><span class="target" id="structengine_1_1snapshot__level__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">snapshot_level_t</span></span></span><a class="headerlink" href="#_CPPv4N6engine16snapshot_level_tE" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine16snapshot_level_t5priceE">
+<span id="_CPPv3N6engine16snapshot_level_t5priceE"></span><span id="_CPPv2N6engine16snapshot_level_t5priceE"></span><span id="engine::snapshot_level_t::price__price_t"></span><span class="target" id="structengine_1_1snapshot__level__t_1afe5843604625f014e72ff369e21492e4"></span><a class="reference internal" href="#_CPPv4N6engine7price_tE" title="engine::price_t"><span class="n"><span class="pre">price_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">price</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine16snapshot_level_t5priceE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine16snapshot_level_t3qtyE">
+<span id="_CPPv3N6engine16snapshot_level_t3qtyE"></span><span id="_CPPv2N6engine16snapshot_level_t3qtyE"></span><span id="engine::snapshot_level_t::qty__qty_t"></span><span class="target" id="structengine_1_1snapshot__level__t_1a25b8cc6db840c7b835376229e3c56c84"></span><a class="reference internal" href="#_CPPv4N6engine5qty_tE" title="engine::qty_t"><span class="n"><span class="pre">qty_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">qty</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine16snapshot_level_t3qtyE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine10snapshot_tE">
+<span id="_CPPv3N6engine10snapshot_tE"></span><span id="_CPPv2N6engine10snapshot_tE"></span><span id="engine::snapshot_t"></span><span class="target" id="structengine_1_1snapshot__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">snapshot_t</span></span></span><a class="headerlink" href="#_CPPv4N6engine10snapshot_tE" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine10snapshot_t4bidsE">
+<span id="_CPPv3N6engine10snapshot_t4bidsE"></span><span id="_CPPv2N6engine10snapshot_t4bidsE"></span><span id="engine::snapshot_t::bids__std::vector:snapshot_level_t:"></span><span class="target" id="structengine_1_1snapshot__t_1a9b8a7fe892d643a3005098a6cc439f05"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine16snapshot_level_tE" title="engine::snapshot_level_t"><span class="n"><span class="pre">snapshot_level_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bids</span></span></span><a class="headerlink" href="#_CPPv4N6engine10snapshot_t4bidsE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine10snapshot_t4asksE">
+<span id="_CPPv3N6engine10snapshot_t4asksE"></span><span id="_CPPv2N6engine10snapshot_t4asksE"></span><span id="engine::snapshot_t::asks__std::vector:snapshot_level_t:"></span><span class="target" id="structengine_1_1snapshot__t_1ac3efc5bcc7f1a81ffe69a0115409a4b1"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N6engine16snapshot_level_tE" title="engine::snapshot_level_t"><span class="n"><span class="pre">snapshot_level_t</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">asks</span></span></span><a class="headerlink" href="#_CPPv4N6engine10snapshot_t4asksE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7trade_tE">
+<span id="_CPPv3N6engine7trade_tE"></span><span id="_CPPv2N6engine7trade_tE"></span><span id="engine::trade_t"></span><span class="target" id="structengine_1_1trade__t"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">trade_t</span></span></span><a class="headerlink" href="#_CPPv4N6engine7trade_tE" title="Link to this definition"></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7trade_t5takerE">
+<span id="_CPPv3N6engine7trade_t5takerE"></span><span id="_CPPv2N6engine7trade_t5takerE"></span><span id="engine::trade_t::taker__id_t"></span><span class="target" id="structengine_1_1trade__t_1ab378586d6bc82fce2d137c5f1d7c79fe"></span><a class="reference internal" href="#_CPPv4N6engine4id_tE" title="engine::id_t"><span class="n"><span class="pre">id_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">taker</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine7trade_t5takerE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7trade_t5makerE">
+<span id="_CPPv3N6engine7trade_t5makerE"></span><span id="_CPPv2N6engine7trade_t5makerE"></span><span id="engine::trade_t::maker__id_t"></span><span class="target" id="structengine_1_1trade__t_1a9756e1782f0841d0781c773d3e9d08df"></span><a class="reference internal" href="#_CPPv4N6engine4id_tE" title="engine::id_t"><span class="n"><span class="pre">id_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">maker</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine7trade_t5makerE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7trade_t5priceE">
+<span id="_CPPv3N6engine7trade_t5priceE"></span><span id="_CPPv2N6engine7trade_t5priceE"></span><span id="engine::trade_t::price__price_t"></span><span class="target" id="structengine_1_1trade__t_1abb19c9100c0096fe853b0457395ad53e"></span><a class="reference internal" href="#_CPPv4N6engine7price_tE" title="engine::price_t"><span class="n"><span class="pre">price_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">price</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine7trade_t5priceE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7trade_t3qtyE">
+<span id="_CPPv3N6engine7trade_t3qtyE"></span><span id="_CPPv2N6engine7trade_t3qtyE"></span><span id="engine::trade_t::qty__qty_t"></span><span class="target" id="structengine_1_1trade__t_1a00349a1ba6e8e55a9c2af26221259538"></span><a class="reference internal" href="#_CPPv4N6engine5qty_tE" title="engine::qty_t"><span class="n"><span class="pre">qty_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">qty</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine7trade_t3qtyE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6engine7trade_t9timestampE">
+<span id="_CPPv3N6engine7trade_t9timestampE"></span><span id="_CPPv2N6engine7trade_t9timestampE"></span><span id="engine::trade_t::timestamp__uint64_t"></span><span class="target" id="structengine_1_1trade__t_1aceef3d428778b5bf8b341644b1c2ab45"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">timestamp</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N6engine7trade_t9timestampE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to scopeX’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Yan Liu.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

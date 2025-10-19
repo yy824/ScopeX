@@ -13,29 +13,53 @@
 using namespace engine;
 
 namespace {
+    /**
+     * @brief Enum class representing the columns in the CSV file for order book replay.
+     * 
+     */
     enum class csv_columns: uint8_t {
-        TIMESTAMP = 0,
-        CMD,
-        SIDE,
-        ORDER_TYPE,
-        TIME_IN_FORCE,
-        PRICE,
-        QTY,
-        ORDER_ID,
+        TIMESTAMP = 0,   /**< Timestamp of the order */
+        CMD,             /**< Command type (e.g., NEW, CANCEL) */
+        SIDE,            /**< Side of the order (e.g., BUY, SELL) */
+        ORDER_TYPE,      /**< Type of the order (e.g., LIMIT, MARKET) */
+        TIME_IN_FORCE,   /**< Time in force for the order (e.g., GTC, IOC) */
+        PRICE,           /**< Price of the order */
+        QTY,             /**< Quantity of the order */
+        ORDER_ID,        /**< Unique identifier for the order */
         // total columns count
-        COUNT
+        COUNT            /**< Total number of columns */
     }; 
 
+    /**
+     * @brief Structure representing the command line arguments.
+     * 
+     */
     struct args {
-        std::string replay_file;
-        int depth = 5;
-        bool print_trades = false;
-        bool print_metrics = true; 
-    };
+        std::string replay_file;    /**< Path to the replay file */
+        std::string out_file;       /**< Path to the output file */
+        int depth = 5;              /**< Depth of the order book */
+        bool print_trades = false;  /**< Flag to print trades */
+        bool print_metrics = true;  /**< Flag to print metrics */
+        bool no_human = false;      /**< Flag to disable human-readable output */
+    }; 
 
+    /**
+     * @brief Case-insensitive string comparison.
+     * 
+     * @param str_a First string to compare.
+     * @param str_b Second string to compare.
+     * @return true If the strings are equal (case-insensitive).
+     * @return false If the strings are not equal.
+     */
     auto inline ieq(const std::string& str_a, const std::string& str_b) -> bool
     {
-        return str_a == str_b;
+        if(str_a.size() != str_b.size()) { return false; }
+        for(size_t i = 0; i < str_a.size(); i++)
+        {
+            if(std::tolower(static_cast<unsigned char>(str_a[i])) != std::tolower(static_cast<unsigned char>(str_b[i])))
+            { return false; }
+        }
+        return true;
     };
 
     // remove head and tail spaces
@@ -81,6 +105,14 @@ namespace {
             else if (ieq(arg, "--no-metrics"))
             {
                 result.print_metrics = false;
+            }
+            else if (ieq(arg, "--no-human"))
+            {
+                result.no_human = true;
+            }
+            else if (arg == "--out" && ( i + 1 < argc ))
+            {
+                result.out_file = argv[++i]; // jump to the next argument
             }
             else if(arg == "-h" || arg == "--help")
             {
