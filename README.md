@@ -13,8 +13,18 @@ See the [BUILDING](BUILDING.md) document.
   ```sudo apt install -y build-essential ninja-build cmake gdb```
   
   optional:
+
+  installation:
   
   ```sudo apt install doxygen doxygen-doc doxygen-gui graphviz texlive sphinx```
+
+  ```pipx inject sphinx breathe myst-parser sphinx-rtd-theme```
+
+  run from root folder:
+
+  ```doxygen```
+
+  ```sphinx-build -E -b html docs/sphinx/source docs/doc_html/```
 
 - developement
   
