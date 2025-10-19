@@ -9,3 +9,4 @@ CMakeLists.txt.user
 CMakeUserPresets.json
 compile_commands.json
 build-tests/
+docs/sphinx/source/xml/
