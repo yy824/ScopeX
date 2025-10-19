@@ -12,7 +12,7 @@
 
 using namespace engine;
 
-namespace {
+namespace cli{
     /**
      * @brief Enum class representing the columns in the CSV file for order book replay.
      * 
@@ -137,6 +137,8 @@ namespace {
         uint64_t traded_qty = 0;
     };
 }; // anonymous namespace
+
+using namespace cli;
 
 int main(int argc, char** argv)
 {
