@@ -32,7 +32,10 @@ See the [BUILDING](BUILDING.md) document.
   
   create cmake environment ```cmake --preset dev```.
 
-  build ```cmake --build build --target scopeX```
+  - build
+    * ```cmake --build build --target scopeX```
+    * ```cmake --build build --target scopeX_cli``` cli use case
+    * ```cmake --build build --target scopeX_bench``` stress test use case
 
 # Contributing
 
