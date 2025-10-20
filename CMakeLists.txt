@@ -51,6 +51,11 @@ set_target_properties(scopeX_cli PROPERTIES OUTPUT_NAME scopeX_cli)
 target_compile_features(scopeX_cli PRIVATE cxx_std_20)
 target_link_libraries(scopeX_cli PRIVATE scopeX_engine)
 
+# ---- CLI Bench ----
+add_executable(scopeX_bench source/cli/main_bench.cpp)
+set_target_properties(scopeX_bench PROPERTIES OUTPUT_NAME scopeX_bench)
+target_compile_features(scopeX_bench PRIVATE cxx_std_20)
+target_link_libraries(scopeX_bench PRIVATE scopeX_engine)
 
 # ---- Install rules ----
 
