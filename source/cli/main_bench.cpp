@@ -18,7 +18,6 @@ struct args
     std::uint16_t max_qty = 100; /**< maximum quantity per order */
     price_t mid_price = 10000; /**< mid price in ticks */
     std::uint8_t depth = 5; /**< Depth of the order book snapshot */
-    bool warmup = true; /**< warmup */
 };
 }; //namespace cli_bench
 
@@ -56,10 +55,6 @@ int main(int argc, char** argv)
         {
             args_value.depth = static_cast<std::uint8_t>(std::stoul(argv[++i]));
         }
-        else if(arg == "--no-warmup")
-        {
-            args_value.warmup = false;
-        }
     }
 
     auto eng = make_engine(engine_config_t{true, 0});
@@ -88,14 +83,6 @@ int main(int argc, char** argv)
         flow.emplace_back(order_cmd);
     }
 
-    // ----- warmup -----
-    if(args_value.warmup)
-    {
-        for(int i = 0; i < 5000; i++)
-        {
-            eng->add_order(flow[i]);
-        }
-    }
 
     // ----- stress test main -----
     std::vector<uint64_t> latencies_ns;
