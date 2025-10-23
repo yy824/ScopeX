@@ -1,7 +1,8 @@
 # scopeX
 
-*M2-01 single producer single consumer model
-*M2-02 matching engine -> producer consumer threads
+* M2-01 single producer single consumer model
+  
+* M2-02 matching engine -> producer consumer threads
 
 # Building and installing
 
