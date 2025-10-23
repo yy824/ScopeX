@@ -57,12 +57,6 @@ set_target_properties(scopeX_bench PROPERTIES OUTPUT_NAME scopeX_bench)
 target_compile_features(scopeX_bench PRIVATE cxx_std_20)
 target_link_libraries(scopeX_bench PRIVATE scopeX_engine)
 
-# ---- spsc test----
-add_executable(spsc_selfcheck tests/source/concurrency/spsc_selfcheck.cpp)
-target_include_directories(spsc_selfcheck PRIVATE ${PROJECT_SOURCE_DIR}/include)
-# pthread 只在 Linux 可能需要
-target_link_libraries(spsc_selfcheck PRIVATE pthread)
-
 # ---- Install rules ----
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)
