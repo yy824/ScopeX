@@ -1,5 +1,12 @@
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+
 add_executable(scopeX_tests EXCLUDE_FROM_ALL
   source/engine/test_engine_basic.cpp
+  source/concurrency/test_spsc_correctness.cpp
+  source/concurrency/test_spsc_boundaries.cpp
+  source/concurrency/test_spsc_stress.cpp
 )
 
 target_link_libraries(scopeX_tests
@@ -7,6 +14,7 @@ target_link_libraries(scopeX_tests
     scopeX::engine          
     GTest::gtest
     GTest::gtest_main
+    Threads::Threads
 )
 
 target_include_directories(scopeX_tests
