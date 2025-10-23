@@ -37,6 +37,13 @@ See the [BUILDING](BUILDING.md) document.
     * ```cmake --build build --target scopeX_cli``` cli use case
     * ```cmake --build build --target scopeX_bench``` stress test use case
 
+- google test
+
+  1. ```rm -rf build-tests```
+  2. ```cmake --preset dev-tests```
+  3. ```cmake --build build-tests --target scopeX_tests```
+  4. ```ctest --test-dir build-tests --output-on-failure```
+
 # Contributing
 
 See the [CONTRIBUTING](CONTRIBUTING.md) document.
