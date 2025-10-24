@@ -8,10 +8,17 @@
  */
 #include <libs/engine/engine.hpp>
 #include <algorithm>
+#include <future>
 #include <map>
 #include <deque>
+#include <memory>
+#include <mutex>
 #include <unordered_map>
 #include <chrono>
+#include "libs/concurrency/spsc_ring.hpp"
+#include <thread>
+#include <shared_mutex>
+#include <atomic>
 
 namespace engine {
 
@@ -262,37 +269,21 @@ snapshot_t OrderBook::snapshot(int depth) const
     return snap;
 }
 
-
-// ------------Engine Implementation---------
-// V1: simple single thread implementation
-// stop for further derivation. For safe capsulation, make it final.
-class EngineSingleThreaded final: public IEngine {
-public:
-    explicit EngineSingleThreaded(const engine_config_t& config): config_(config) {}
-    add_result_t add_order(const order_cmd_t& cmd) override;
-    bool cancel_order(id_t order_id) override 
-    { 
-        bool is_ok = ob_.cancel(order_id);
-        if(is_ok)
-        {
-            metrics_.cancel_orders++;
-        }
-
-        return is_ok; 
-    };
-    snapshot_t snapshot(int depth) const override {return ob_.snapshot(depth);};
-
-    engine_metrics_t metrics() const override { return metrics_; }
-
-private:
-    engine_config_t config_;
-    OrderBook ob_;
-    id_t next_{1000};
-    uint64_t seq_{0}; // internal sequence number for ordering
-    mutable engine_metrics_t metrics_;
+// common part of single thread and asynchronous
+struct single_thread_sync_t{
+    template<class F> decltype(auto) write(F&& func) {return func();}
+    template<class F> decltype(auto) read(F&& func) {return func();}
 };
 
-add_result_t EngineSingleThreaded::add_order(const order_cmd_t& cmd)
+struct shared_mutex_sync_t{
+    std::shared_mutex& mtx;
+    template<class F> decltype(auto) write(F&& func) {std::unique_lock locker(mtx); return func();}
+    template<class F> decltype(auto) read(F&& func) {std::shared_lock locker(mtx); return func();}
+};
+
+
+template<class Sync>
+add_result_t add_impl(Sync& sync, const engine_config_t& config_, OrderBook& ob_, engine_metrics_t& metrics_, id_t& next_, uint64_t& seq_, const order_cmd_t& cmd)
 {
     // 0. basic validation
     if (cmd.qty <= 0) 
@@ -334,7 +325,9 @@ add_result_t EngineSingleThreaded::add_order(const order_cmd_t& cmd)
         }
 
         // implement limit orders
-        trades = ob_.add_limit(order_t{.id=cmd.order_id.value_or(order_id), .side=cmd.side, .price=cmd.price, .qty=cmd.qty, .seq_num=0}, cmd.time_in_force, timestamp);
+        sync.write([&]{trades = ob_.add_limit(order_t{.id=cmd.order_id.value_or(order_id), 
+            .side=cmd.side, .price=cmd.price, .qty=cmd.qty, .seq_num=0}, cmd.time_in_force, timestamp);});
+
         for(const auto& trade:trades) {filled_qty += trade.qty;}
         remaining_qty = cmd.qty - filled_qty;
 
@@ -373,8 +366,10 @@ add_result_t EngineSingleThreaded::add_order(const order_cmd_t& cmd)
         }
 
         bool empty_book = false;
-        trades = ob_.add_market(order_t{.id=cmd.order_id.value_or(order_id), .side=cmd.side, .price=0, .qty=cmd.qty, .seq_num=0}, 
-                                timestamp, config_.market_max_levels, empty_book);
+        sync.write([&]{trades = ob_.add_market(order_t{.id=cmd.order_id.value_or(order_id), 
+            .side=cmd.side, .price=0, .qty=cmd.qty, .seq_num=0}, 
+            timestamp, config_.market_max_levels, empty_book);});
+        
 
         for(const auto& trade:trades) {filled_qty += trade.qty;}
         remaining_qty = cmd.qty - filled_qty;
@@ -399,48 +394,244 @@ add_result_t EngineSingleThreaded::add_order(const order_cmd_t& cmd)
     const auto t_end = std::chrono::high_resolution_clock::now();
     const auto duration_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start);
 
-    metrics_.add_orders++;
-    metrics_.trades += trades.size();
-    for(auto& trade: trades) { metrics_.traded_qty += trade.qty; }
+    // write metrics -> atomic like, get mutex, nothing else is able to write
+    sync.write([&]{
+        metrics_.add_orders++;
+        metrics_.trades += trades.size();
+        for(auto& trade: trades) { metrics_.traded_qty += trade.qty; }
 
-    metrics_.add_total_ns += duration_ns.count();
-    // find min and max latency
-    metrics_.add_min_ns = std::min(metrics_.add_min_ns, static_cast<uint64_t>(duration_ns.count()));
-    metrics_.add_max_ns = std::max(metrics_.add_max_ns, static_cast<uint64_t>(duration_ns.count()));
+        metrics_.add_total_ns += duration_ns.count();
+        // find min and max latency
+        metrics_.add_min_ns = std::min(metrics_.add_min_ns, static_cast<uint64_t>(duration_ns.count()));
+        metrics_.add_max_ns = std::max(metrics_.add_max_ns, static_cast<uint64_t>(duration_ns.count()));
 
-    // refresh best bid/ask (O(1) speed)
-    auto snapshot_moment = this->snapshot(1);
+        // refresh best bid/ask (O(1) speed)
+        auto snapshot_moment = ob_.snapshot(1);
 
-    if(!snapshot_moment.bids.empty())
-    {
-        metrics_.best_bid_px = snapshot_moment.bids[0].price;
-        metrics_.best_bid_qty = snapshot_moment.bids[0].qty;
-    }
-    else
-    {
-        metrics_.best_bid_px = 0;
-        metrics_.best_bid_qty = 0;
-    }
+        if(!snapshot_moment.bids.empty())
+        {
+            metrics_.best_bid_px = snapshot_moment.bids[0].price;
+            metrics_.best_bid_qty = snapshot_moment.bids[0].qty;
+        }
+        else
+        {
+            metrics_.best_bid_px = 0;
+            metrics_.best_bid_qty = 0;
+        }
 
-    if(!snapshot_moment.asks.empty())
-    {
-        metrics_.best_ask_px = snapshot_moment.asks[0].price;
-        metrics_.best_ask_qty = snapshot_moment.asks[0].qty;
-    }
-    else
-    {
-        metrics_.best_ask_px = 0;
-        metrics_.best_ask_qty = 0;  
-    }
+        if(!snapshot_moment.asks.empty())
+        {
+            metrics_.best_ask_px = snapshot_moment.asks[0].price;
+            metrics_.best_ask_qty = snapshot_moment.asks[0].qty;
+        }
+        else
+        {
+            metrics_.best_ask_px = 0;
+            metrics_.best_ask_qty = 0;  
+        }
+    });
 
     return add_result_t{ .status=status, .order_id=order_id, .trades=std::move(trades), .filled_qty=filled_qty, .remaining_qty=remaining_qty};
 }
+
+template<class Sync>
+bool cancel_impl(Sync& sync, OrderBook& ob_, engine_metrics_t& metrics_, id_t order_id)
+{
+    bool is_ok = false;
+    sync.write([&]{
+        is_ok = ob_.cancel(order_id);
+        if(is_ok)
+        {
+            metrics_.cancel_orders++;
+        }
+    });
+    return is_ok; 
+}
+
+// ------------Engine Implementation---------
+// V1: simple single thread implementation
+// stop for further derivation. For safe capsulation, make it final.
+class EngineSingleThreaded final: public IEngine {
+public:
+    explicit EngineSingleThreaded(const engine_config_t& config): config_(config) {}
+    add_result_t add_order(const order_cmd_t& cmd) override
+    {
+        single_thread_sync_t sync;
+        return add_impl(sync, config_, ob_, metrics_, next_, seq_, cmd);
+    };
+    bool cancel_order(id_t order_id) override 
+    { 
+        single_thread_sync_t sync;
+        return cancel_impl(sync, ob_, metrics_, order_id);
+    };
+    snapshot_t snapshot(int depth) const override {return ob_.snapshot(depth);};
+
+    engine_metrics_t metrics() const override { return metrics_; }
+
+private:
+    engine_config_t config_;
+    OrderBook ob_;
+    id_t next_{1000};
+    uint64_t seq_{0}; // internal sequence number for ordering
+    mutable engine_metrics_t metrics_;
+};
+
+// --------------- Asynchronous Engine Implementation (Producer/Consumer) -----------------
+// V2: SPSC implementation
+class EngineAsync final : public IEngine {
+public:
+    explicit EngineAsync(const engine_config_t& config, std::size_t queue_capacity = (1u << 16)) 
+        : config_(config), queue_(queue_capacity)
+    {
+        start();
+    }
+
+private:
+    enum class kind_t : uint8_t {ADD, CANCEL, STOP};  ///< ADD: add new order, CANCEL: cancel order, STOP: quit loop
+    
+    /**
+     * @brief command format within asynchronous engine with spsc ring
+     * 
+     */
+    struct cmd_t {
+        kind_t kind{}; ///< type of command
+        // ADD
+        order_cmd_t add_cmd{}; ///< add order command
+        std::promise<add_result_t>* add_reply{nullptr}; ///< asynchronous result from add command. Consumer informs producer
+        // CANCEL
+        id_t cancel_id{}; ///< cancel order command
+        std::promise<bool>* cancel_reply{nullptr}; ///< asynchronous result from cancel command. Consumer informs producer
+    };
+
+    engine_config_t config_;
+
+    // state of mutex
+    mutable std::shared_mutex state_mtx_;
+    OrderBook ob_;
+    id_t next_{1000};
+    uint64_t seq_{0};
+    mutable engine_metrics_t metrics_{}; // measurement
+
+    // circular queue to store order_cmt_t type data
+    concurrency::SpscRing<cmd_t> queue_;
+    std::atomic<bool> running_{false};
+    std::thread worker_;
+
+    void start()
+    {
+        bool expected = false;
+        // make sure only one thread is created
+        if (!running_.compare_exchange_strong(expected, true)) {return;}
+        worker_ = std::thread(&EngineAsync::run_loop_consumer, this);
+    }
+
+    void stop()
+    {
+        bool expected = true;
+        // single thread can only be closed once
+        if(!running_.compare_exchange_strong(expected, false)) {return;}
+
+        // send one time stop to force thread quit
+        cmd_t cmd;
+        cmd.kind = kind_t::STOP;
+        queue_.push(std::move(cmd));
+
+        if(worker_.joinable()) {worker_.join();}
+    }
+
+    void run_loop_consumer();
+
+    add_result_t add_order(const order_cmd_t& cmd) override
+    {
+        shared_mutex_sync_t sync{state_mtx_};
+        return add_impl(sync, config_, ob_, metrics_, next_, seq_, cmd);
+    }
+
+    bool cancel_order(const id_t order_id) override
+    {
+        shared_mutex_sync_t sync{state_mtx_};
+        return cancel_impl(sync, ob_, metrics_, order_id);
+    }
+
+    snapshot_t snapshot(int depth) const override
+    {
+        shared_mutex_sync_t sync{state_mtx_};
+        return sync.read([&]{return ob_.snapshot(depth);});
+    }
+
+    engine_metrics_t metrics() const override {
+        shared_mutex_sync_t sync{state_mtx_};
+        return sync.read([&]{return metrics_;});
+    }
+};
+
+/**
+ * @brief main loop of consumer
+ * 
+ */
+void EngineAsync::run_loop_consumer()
+{
+    while(running_.load(std::memory_order_acquire))
+    {
+        cmd_t cmd;
+        // no tasks to do -> yield until next operation
+        if(!queue_.pop(cmd))
+        {
+            std::this_thread::yield();
+            continue;
+        }
+
+        switch(cmd.kind)
+        {
+            case kind_t::ADD: {
+                add_result_t result = add_order(cmd.add_cmd);
+                if(cmd.add_reply != nullptr) {cmd.add_reply->set_value(std::move(result));} // send back asynchronously result
+                break;
+            }
+            case kind_t::CANCEL: {
+                bool is_ok = cancel_order(cmd.cancel_id);
+                if(cmd.cancel_reply != nullptr) {cmd.cancel_reply->set_value(is_ok);} // send back asynchronously result
+                break;
+            }
+            case kind_t::STOP:
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    // final step after receiving STOP command
+    cmd_t cmd;
+    while (queue_.pop(cmd))
+    {
+        // clean up rest unhandled command
+        if(cmd.kind == kind_t::ADD && cmd.add_reply != nullptr)
+        {
+            add_result_t result;
+            result.status = OrderStatus::REJECT;
+            cmd.add_reply->set_value(std::move(result));
+        }
+        if(cmd.kind == kind_t::CANCEL && cmd.cancel_reply != nullptr)
+        {
+            cmd.cancel_reply->set_value(std::move(false));
+        }
+    }
+}
+
+#ifndef SCOPEX_ENGINE_IMPL_ASYNC
+#define SCOPEX_ENGINE_IMPL_ASYNC 1
+#endif
 
 /// create a unique pointer of engine
 /// for future extension, can create different engine implementations based on config
 std::unique_ptr<IEngine> make_engine(const engine_config_t& config)
 {
+#if SCOPEX_ENGINE_IMPL_ASYNC
+    return std::make_unique<EngineAsync>(config);
+#else
     return std::make_unique<EngineSingleThreaded>(config);
+#endif
 }
 
 } // namespace engine

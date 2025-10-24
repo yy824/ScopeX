@@ -57,6 +57,11 @@ set_target_properties(scopeX_bench PROPERTIES OUTPUT_NAME scopeX_bench)
 target_compile_features(scopeX_bench PRIVATE cxx_std_20)
 target_link_libraries(scopeX_bench PRIVATE scopeX_engine)
 
+# ---- m2 demo ----
+add_executable(scopeX_m2_demo source/cli/main_m2_demo.cpp)
+target_link_libraries(scopeX_m2_demo PRIVATE scopeX_engine pthread)
+target_compile_features(scopeX_m2_demo PRIVATE cxx_std_20)
+
 # ---- Install rules ----
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)

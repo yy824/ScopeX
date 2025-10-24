@@ -1,7 +1,5 @@
 #pragma once
 #include <cstddef>
-#include <cstdint>
-#include <memory>
 #include <cassert>
 #include <new>
 #include <type_traits>
@@ -39,7 +37,7 @@ public:
     bool push(T&& val) noexcept(std::is_nothrow_move_constructible<T>::value)
     {
         return emplace_impl(std::move(val));
-    }
+    } 
 
     template <class... args_t>
     bool emplace(args_t&&... args) noexcept(std::is_nothrow_constructible<T, args_t...>::value)
@@ -136,7 +134,7 @@ private:
         const std::size_t tail = tail_.load(std::memory_order_relaxed);
 
         // if it is going to be full
-        if((tail-head) >= capacity_)
+        if((tail - head) >= capacity_)
         {
             head = head_.load(std::memory_order_acquire);
             head_cached_for_producer_ = head;
